@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kartik Trading Hindi | हिंदी में ट्रेडिंग सीखो, चार्ट देखो, रणनीति आज़माओ</title>
+<meta name="description" content="Crypto और Forex ट्रेडिंग हिंदी में: लाइव चार्ट, मल्टी-टाइमफ्रेम विश्लेषण, कैलकुलेटर, स्ट्रैटेजी लैब और Telegram पर मार्केट अलर्ट। पूरी तरह मुफ़्त।">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23070b14'/%3E%3Cpath d='M8 22l5-7 4 4 7-10' fill='none' stroke='%23ffb02e' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070b14; --panel:#0e1524; --panel2:#131c30; --line:#1f2b45;
+  --tx:#e9eef8; --mu:#93a1bd; --gold:#ffb02e; --up:#22c55e; --dn:#ef4444; --info:#38bdf8;
+  --r:10px; --wrap:1180px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{background:var(--bg);color:var(--tx);font:400 16px/1.65 'Hind',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:'Tiro Devanagari Hindi','Hind',serif;font-weight:400;line-height:1.25}
+h2{font-size:clamp(24px,4vw,34px);margin-bottom:6px}
+h3{font-size:20px}
+.sub{color:var(--mu);max-width:62ch;margin-bottom:20px}
+section{padding:44px 0;border-top:1px solid var(--line)}
+.num{font-variant-numeric:tabular-nums}
+.up{color:var(--up)} .dn{color:var(--dn)}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:50;background:rgba(7,11,20,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:14px;height:58px}
+.brand{font-family:'Tiro Devanagari Hindi',serif;font-size:19px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.brand i{width:22px;height:22px;border-radius:6px;background:var(--gold);display:inline-block;position:relative}
+.brand i:after{content:"";position:absolute;left:4px;right:4px;top:11px;height:2px;background:var(--bg);transform:rotate(-30deg)}
+nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1}
+nav::-webkit-scrollbar{display:none}
+nav a{padding:6px 11px;border-radius:7px;color:var(--mu);font-size:15px;white-space:nowrap}
+nav a:hover{color:var(--tx);background:var(--panel)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--tx);font:600 16px 'Hind',sans-serif;cursor:pointer;min-height:44px}
+.btn:hover{border-color:#34466e}
+.btn.gold{background:var(--gold);color:#1a1200;border-color:var(--gold)}
+.btn.gold:hover{filter:brightness(1.07)}
+.btn.sm{padding:7px 14px;min-height:38px;font-size:15px}
+
+/* hero */
+.hero{padding:36px 0 40px;border-top:0}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center}
+.hero h1{font-size:clamp(32px,6vw,54px);margin-bottom:14px}
+.hero p.lead{color:var(--mu);font-size:18px;max-width:50ch;margin-bottom:22px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.trust{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--mu);font-size:14px}
+.trust span:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--up);margin-right:7px}
+.live{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.live .row1{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.live .tag{color:var(--mu);font-size:14px}
+.live .px{font-size:clamp(34px,6vw,48px);font-weight:700;letter-spacing:-.5px;font-variant-numeric:tabular-nums;line-height:1.1;margin:2px 0}
+.live .chg{font-weight:600;font-variant-numeric:tabular-nums}
+.live canvas{width:100%;height:110px;display:block;margin:10px 0 6px}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.mini div{background:var(--panel2);border-radius:8px;padding:9px 11px;font-size:14px}
+.mini b{display:block;font-variant-numeric:tabular-nums;font-size:15px}
+.flash-up{animation:fu .7s}.flash-dn{animation:fd .7s}
+@keyframes fu{from{color:var(--up);text-shadow:0 0 14px rgba(34,197,94,.5)}}
+@keyframes fd{from{color:var(--dn);text-shadow:0 0 14px rgba(239,68,68,.5)}}
+.note{font-size:13px;color:var(--mu)}
+
+/* panels / widgets */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.tvbox{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;min-height:120px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chip{padding:8px 15px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--mu);font:500 15px 'Hind',sans-serif;cursor:pointer;min-height:40px}
+.chip[aria-pressed=true]{background:var(--gold);color:#1a1200;border-color:var(--gold);font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.how{display:grid;gap:10px;font-size:15px;color:var(--mu)}
+.how b{color:var(--tx)}
+.fg{display:flex;align-items:center;gap:16px}
+.fg .big{font-size:56px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.bar{height:10px;border-radius:6px;background:linear-gradient(90deg,#ef4444,#f59e0b,#eab308,#84cc16,#22c55e);position:relative;margin:12px 0 6px}
+.bar i{position:absolute;top:-4px;width:4px;height:18px;background:#fff;border-radius:2px;transform:translateX(-2px)}
+
+/* learn */
+.levels{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.lvl{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:8px}
+.lvl h3{font-size:19px}
+.lvl ul{list-style:none;display:grid;gap:5px;color:var(--mu);font-size:15px}
+.lvl li:before{content:"–";margin-right:7px;color:var(--line)}
+.lvl.open{border-color:#4a3a14}
+.badge{display:inline-block;align-self:flex-start;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:600;background:var(--panel2);color:var(--mu)}
+.badge.on{background:rgba(255,176,46,.14);color:var(--gold)}
+.quiz .q{font-size:18px;margin-bottom:12px}
+.quiz .opts{display:grid;gap:8px}
+.opt{text-align:left;padding:12px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--tx);font:500 16px 'Hind',sans-serif;cursor:pointer;min-height:46px}
+.opt:hover{border-color:#34466e}
+.opt.ok{border-color:var(--up);background:rgba(34,197,94,.12)}
+.opt.bad{border-color:var(--dn);background:rgba(239,68,68,.12)}
+.why{margin-top:12px;color:var(--mu);font-size:15px;min-height:24px}
+
+/* tools */
+.field{display:grid;gap:5px;font-size:14px;color:var(--mu)}
+.field input,.field select{background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--tx);padding:11px 12px;font:500 17px 'Hind',sans-serif;min-height:46px;width:100%}
+.field input:focus,.field select:focus{border-color:var(--gold);outline:0}
+.form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px}
+.out{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.kpi{background:var(--panel2);border-radius:9px;padding:11px 13px}
+.kpi span{display:block;font-size:13px;color:var(--mu)}
+.kpi b{font-size:21px;font-variant-numeric:tabular-nums;word-break:break-word}
+.err{color:var(--dn);margin-top:10px;font-size:15px}
+.tabpane[hidden]{display:none}
+
+/* lab */
+.lab-out canvas{width:100%;height:260px;display:block;background:var(--panel2);border-radius:9px;margin:12px 0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 6px;text-align:right;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--mu);font-weight:500}
+.legend{display:flex;gap:16px;font-size:14px;color:var(--mu);flex-wrap:wrap}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+
+/* soon + footer */
+.soon{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.soon .panel p{color:var(--mu);font-size:15px;margin-top:4px}
+.tg{background:linear-gradient(135deg,#142038,#0e1524);border:1px solid #2a3b61;border-radius:var(--r);padding:30px;display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.tg p{color:var(--mu);max-width:56ch}
+.sample{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.6;max-width:330px;width:100%}
+.sample b{display:block;margin-bottom:4px}
+footer{border-top:1px solid var(--line);padding:30px 0 50px;color:var(--mu);font-size:14px}
+footer p{max-width:90ch;margin-bottom:10px}
+footer .links{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:14px;color:var(--tx)}
+
+@media(max-width:900px){
+  .hero .wrap,.grid2,.grid3,.soon{grid-template-columns:1fr}
+  .levels{grid-template-columns:1fr 1fr}
+  .kpis{grid-template-columns:1fr 1fr}
+  .top .btn{display:none}
+}
+@media(max-width:560px){
+  .levels,.form,.out{grid-template-columns:1fr}
+  .mini{grid-template-columns:1fr 1fr 1fr}
+  section{padding:34px 0}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><i></i>कार्तिक ट्रेडिंग हिंदी</a>
+    <nav aria-label="मुख्य मेन्यू">
+      <a href="#markets">मार्केट</a>
+      <a href="#chart">चार्ट</a>
+      <a href="#analysis">विश्लेषण</a>
+      <a href="#calendar">कैलेंडर</a>
+      <a href="#learn">सीखो</a>
+      <a href="#tools">टूल्स</a>
+      <a href="#lab">स्ट्रैटेजी लैब</a>
+    </nav>
+    <a class="btn gold sm" href="https://t.me/kartiktradinghindi" target="_blank" rel="noopener">Telegram जुड़ो</a>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <h1>बाज़ार को हिंदी में पढ़ो, अपनी रणनीति ख़ुद परखो।</h1>
+      <p class="lead">Crypto और Forex के लाइव चार्ट, हर टाइमफ्रेम का विश्लेषण, कैलकुलेटर और बैकटेस्ट। नए ट्रेडर के लिए सीखने का रास्ता, अनुभवी ट्रेडर के लिए आज़माने की जगह।</p>
+      <div class="cta">
+        <a class="btn gold" href="https://t.me/kartiktradinghindi" target="_blank" rel="noopener">Telegram पर अलर्ट पाओ</a>
+        <a class="btn" href="#learn">सीखना शुरू करो</a>
+      </div>
+      <div class="trust"><span>पूरी तरह मुफ़्त</span><span>कोई ट्रेड सिग्नल नहीं बेचते</span><span>सिर्फ़ शिक्षा के लिए</span></div>
+    </div>
+    <div class="live" aria-live="polite">
+      <div class="row1"><span class="tag">Bitcoin (BTC/USDT) · लाइव</span><span class="note" id="lv-time">…</span></div>
+      <div class="px num" id="lv-px">—</div>
+      <div class="chg num" id="lv-chg">24 घंटे: —</div>
+      <canvas id="lv-spark" aria-label="Bitcoin का पिछले 48 घंटे का चार्ट"></canvas>
+      <div class="mini">
+        <div>ETH<b id="m-eth" class="num">—</b></div>
+        <div>BNB<b id="m-bnb" class="num">—</b></div>
+        <div>SOL<b id="m-sol" class="num">—</b></div>
+      </div>
+      <p class="note" id="lv-note" style="margin-top:8px"></p>
+    </div>
+  </div>
+</section>
+
+<div class="wrap" style="padding-bottom:30px">
+  <div class="tvbox" id="tv-tape" style="min-height:76px"></div>
+</div>
+
+<!-- MARKETS -->
+<section id="markets">
+  <div class="wrap">
+    <h2>आज का बाज़ार</h2>
+    <p class="sub">Crypto, Forex, इंडेक्स और सोना एक जगह। किसी भी नाम पर दबाकर उसका चार्ट खोल सकते हो।</p>
+    <div class="grid2" style="grid-template-columns:1.5fr 1fr">
+      <div class="tvbox" id="tv-overview" style="min-height:520px"></div>
+      <div class="panel">
+        <h3>बाज़ार का मूड</h3>
+        <p class="note" style="margin:4px 0 14px">Crypto Fear &amp; Greed इंडेक्स: डर बहुत हो तो लोग बेच रहे होते हैं, लालच बहुत हो तो हर कोई ख़रीद रहा होता है।</p>
+        <div class="fg"><div class="big" id="fg-n">—</div><div><b id="fg-l">लोड हो रहा है…</b><div class="note" id="fg-d"></div></div></div>
+        <div class="bar"><i id="fg-i" style="left:50%"></i></div>
+        <div style="display:flex;justify-content:space-between" class="note"><span>अत्यधिक डर</span><span>अत्यधिक लालच</span></div>
+        <p class="note" style="margin-top:14px">स्रोत: alternative.me. यह सिर्फ़ मूड बताता है, ख़रीदने या बेचने का संकेत नहीं।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHART -->
+<section id="chart">
+  <div class="wrap">
+    <h2>प्रोफेशनल लाइव चार्ट</h2>
+    <p class="sub">ड्रॉइंग टूल, इंडिकेटर और हर टाइमफ्रेम चार्ट के अंदर ही मिलते हैं। ऊपर से मार्केट बदलो।</p>
+    <div class="chips" id="chart-chips" role="group" aria-label="चार्ट का मार्केट"></div>
+    <div class="tvbox" id="tv-chart" style="height:580px"></div>
+  </div>
+</section>
+
+<!-- ANALYSIS -->
+<section id="analysis">
+  <div class="wrap">
+    <h2>हर टाइमफ्रेम का विश्लेषण</h2>
+    <p class="sub">1 मिनट से 1 महीने तक: RSI, MACD, मूविंग एवरेज जैसे दर्जनों इंडिकेटर मिलाकर एक मीटर। नीचे टैब से टाइमफ्रेम बदलो।</p>
+    <div class="chips" id="ta-chips" role="group" aria-label="विश्लेषण का मार्केट"></div>
+    <div class="grid2" style="grid-template-columns:1.1fr .9fr">
+      <div class="tvbox" id="tv-ta" style="height:480px"></div>
+      <div class="panel how">
+        <h3>मीटर कैसे पढ़ें</h3>
+        <div><b>Strong Sell / Sell:</b> ज़्यादातर इंडिकेटर गिरावट की तरफ़ इशारा कर रहे हैं।</div>
+        <div><b>Neutral:</b> इंडिकेटर बँटे हुए हैं, बाज़ार दिशा तय नहीं कर पाया।</div>
+        <div><b>Buy / Strong Buy:</b> ज़्यादातर इंडिकेटर तेज़ी की तरफ़ इशारा कर रहे हैं।</div>
+        <div><b>छोटा और बड़ा टाइमफ्रेम मिलाओ:</b> 5 मिनट और 15 मिनट का मीटर तेज़ी दिखाए पर 1 दिन और 1 हफ़्ते का मीटर गिरावट, तो वह उछाल अक्सर कमज़ोर होता है। बड़ा टाइमफ्रेम ज़्यादा वज़न रखता है।</div>
+        <div class="note">यह इंडिकेटर का गणित है, भविष्यवाणी नहीं। फ़ैसले से पहले हमेशा Stop Loss तय करो।</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALENDAR -->
+<section id="calendar">
+  <div class="wrap">
+    <h2>आर्थिक कैलेंडर</h2>
+    <p class="sub">Fed, महँगाई और रोज़गार के आँकड़े जैसी ख़बरों से बाज़ार अचानक हिलता है। इनका समय पहले देख लो।</p>
+    <div class="tvbox" id="tv-cal" style="height:520px"></div>
+  </div>
+</section>
+
+<!-- LEARN -->
+<section id="learn">
+  <div class="wrap">
+    <h2>सीखने का रास्ता</h2>
+    <p class="sub">चार स्तर, एक के बाद एक। हर स्तर में पहले पढ़ो, फिर चार्ट पर देखो, फिर टूल से आज़माओ।</p>
+    <div class="levels">
+      <div class="lvl open"><span class="badge on">उपलब्ध</span><h3>स्तर 1: शुरुआत</h3>
+        <ul><li>Forex क्या है</li><li>Crypto क्या है</li><li>कैंडलस्टिक चार्ट पढ़ना</li><li>रिस्क मैनेजमेंट</li><li>ट्रेडिंग साइकोलॉजी</li><li>शुरुआती की 5 बड़ी गलतियाँ</li></ul>
+        <a class="btn gold sm" href="https://kartiktradinghindi.blogspot.com/p/learn.html" target="_blank" rel="noopener">लेख पढ़ो</a></div>
+      <div class="lvl"><span class="badge">जल्द आ रहा है</span><h3>स्तर 2: तकनीकी विश्लेषण</h3>
+        <ul><li>सपोर्ट और रेज़िस्टेंस</li><li>ट्रेंडलाइन</li><li>मूविंग एवरेज</li><li>RSI और MACD</li><li>वॉल्यूम</li></ul></div>
+      <div class="lvl"><span class="badge">जल्द आ रहा है</span><h3>स्तर 3: रणनीति</h3>
+        <ul><li>ब्रेकआउट और फ़ेकआउट</li><li>पुलबैक</li><li>मल्टी-टाइमफ्रेम</li><li>बैकटेस्टिंग</li></ul>
+        <a class="btn sm" href="#lab">स्ट्रैटेजी लैब खोलो</a></div>
+      <div class="lvl"><span class="badge">जल्द आ रहा है</span><h3>स्तर 4: प्रोफेशनल</h3>
+        <ul><li>मार्केट स्ट्रक्चर</li><li>बड़े खिलाड़ियों की हलचल</li><li>पोज़िशन साइज़िंग सिस्टम</li><li>ट्रेडिंग जर्नल</li></ul></div>
+    </div>
+
+    <div class="panel quiz" style="margin-top:22px;max-width:760px" id="quiz">
+      <h3 style="margin-bottom:12px">5 सवाल की जाँच</h3>
+      <div id="quiz-body"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="wrap">
+    <h2>ट्रेडिंग कैलकुलेटर</h2>
+    <p class="sub">ट्रेड लेने से पहले जोखिम गिनो। सारा हिसाब तुम्हारे फ़ोन में ही होता है, कोई डेटा कहीं नहीं जाता।</p>
+    <div class="chips" id="tool-tabs" role="tablist">
+      <button class="chip" role="tab" aria-pressed="true" data-t="t1">पोज़िशन साइज़</button>
+      <button class="chip" role="tab" aria-pressed="false" data-t="t2">रिस्क और रिवॉर्ड</button>
+      <button class="chip" role="tab" aria-pressed="false" data-t="t3">Pip और मुनाफ़ा-नुकसान</button>
+      <button class="chip" role="tab" aria-pressed="false" data-t="t4">चक्रवृद्धि</button>
+    </div>
+    <div class="panel" style="max-width:760px">
+
+      <div class="tabpane" id="t1">
+        <div class="form">
+          <label class="field">कुल पूँजी<input id="a-cap" type="number" inputmode="decimal" value="100000"></label>
+          <label class="field">एक ट्रेड में जोखिम (%)<input id="a-rp" type="number" inputmode="decimal" value="1" step="0.1"></label>
+          <label class="field">Entry भाव<input id="a-en" type="number" inputmode="decimal" value="100"></label>
+          <label class="field">Stop Loss भाव<input id="a-sl" type="number" inputmode="decimal" value="95"></label>
+        </div>
+        <button class="btn gold" data-calc="c1">हिसाब लगाओ</button>
+        <div class="err" id="e1" hidden></div>
+        <div class="out" id="o1" hidden></div>
+      </div>
+
+      <div class="tabpane" id="t2" hidden>
+        <div class="form">
+          <label class="field">Entry भाव<input id="b-en" type="number" inputmode="decimal" value="100"></label>
+          <label class="field">Stop Loss भाव<input id="b-sl" type="number" inputmode="decimal" value="95"></label>
+          <label class="field">Target भाव<input id="b-tg" type="number" inputmode="decimal" value="115"></label>
+          <label class="field">मात्रा (units)<input id="b-q" type="number" inputmode="decimal" value="200"></label>
+        </div>
+        <button class="btn gold" data-calc="c2">हिसाब लगाओ</button>
+        <div class="err" id="e2" hidden></div>
+        <div class="out" id="o2" hidden></div>
+      </div>
+
+      <div class="tabpane" id="t3" hidden>
+        <div class="form">
+          <label class="field">लॉट साइज़<input id="p-lot" type="number" inputmode="decimal" value="0.1" step="0.01"></label>
+          <label class="field">Pips (हार के लिए माइनस लिखो)<input id="p-pip" type="number" inputmode="decimal" value="30"></label>
+          <label class="field">1 स्टैंडर्ड लॉट पर 1 pip की क़ीमत ($)<input id="p-val" type="number" inputmode="decimal" value="10"></label>
+        </div>
+        <button class="btn gold" data-calc="c3">हिसाब लगाओ</button>
+        <div class="err" id="e3" hidden></div>
+        <div class="out" id="o3" hidden></div>
+        <p class="note" style="margin-top:10px">EUR/USD जैसी जोड़ियों में 1 स्टैंडर्ड लॉट पर 1 pip लगभग $10 होता है। दूसरी जोड़ियों में ब्रोकर का pip value देखकर भरो।</p>
+      </div>
+
+      <div class="tabpane" id="t4" hidden>
+        <div class="form">
+          <label class="field">शुरुआती पूँजी<input id="d-st" type="number" inputmode="decimal" value="10000"></label>
+          <label class="field">हर महीने जोड़ना<input id="d-ad" type="number" inputmode="decimal" value="0"></label>
+          <label class="field">मासिक रिटर्न (%)<input id="d-r" type="number" inputmode="decimal" value="3" step="0.1"></label>
+          <label class="field">कितने महीने<input id="d-m" type="number" inputmode="numeric" value="12"></label>
+        </div>
+        <button class="btn gold" data-calc="c4">हिसाब लगाओ</button>
+        <div class="err" id="e4" hidden></div>
+        <div class="out" id="o4" hidden></div>
+        <p class="note" style="margin-top:10px">यह सिर्फ़ गणित है। असली ट्रेडिंग में हर महीने एक जैसा रिटर्न नहीं मिलता और नुकसान वाले महीने भी आते हैं।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LAB -->
+<section id="lab">
+  <div class="wrap">
+    <h2>स्ट्रैटेजी लैब</h2>
+    <p class="sub">अपनी रणनीति पिछले असली भावों पर चलाकर देखो कि वह कितनी चलती। डेटा Binance से लाइव आता है, गणित तुम्हारे ब्राउज़र में होता है।</p>
+    <div class="panel">
+      <div class="form" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+        <label class="field">मार्केट<select id="bt-sym"><option value="BTCUSDT">Bitcoin</option><option value="ETHUSDT">Ethereum</option><option value="BNBUSDT">BNB</option><option value="SOLUSDT">Solana</option></select></label>
+        <label class="field">टाइमफ्रेम<select id="bt-tf"><option value="15m">15 मिनट</option><option value="1h">1 घंटा</option><option value="4h" selected>4 घंटे</option><option value="1d">1 दिन</option></select></label>
+        <label class="field">रणनीति<select id="bt-st"><option value="ema">EMA क्रॉसओवर</option><option value="rsi">RSI उलटफेर</option><option value="brk">ब्रेकआउट</option></select></label>
+        <label class="field"><span id="bt-la">तेज़ EMA</span><input id="bt-a" type="number" inputmode="numeric" value="20"></label>
+        <label class="field"><span id="bt-lb">धीमी EMA</span><input id="bt-b" type="number" inputmode="numeric" value="50"></label>
+        <label class="field">हर तरफ़ की फ़ीस (%)<input id="bt-fee" type="number" inputmode="decimal" value="0.1" step="0.01"></label>
+      </div>
+      <p class="note" id="bt-help" style="margin-bottom:12px"></p>
+      <button class="btn gold" id="bt-run">बैकटेस्ट चलाओ</button>
+      <div class="err" id="bt-err" hidden></div>
+    </div>
+    <div class="panel lab-out" id="bt-out" hidden style="margin-top:14px">
+      <div class="kpis" id="bt-kpis"></div>
+      <canvas id="bt-cv"></canvas>
+      <div class="legend"><span><i style="background:var(--gold)"></i>रणनीति</span><span><i style="background:#64748b"></i>सिर्फ़ ख़रीदकर रखना</span></div>
+      <h3 style="margin:18px 0 8px;font-size:18px">आख़िरी ट्रेड</h3>
+      <div style="overflow-x:auto"><table id="bt-tbl"></table></div>
+      <p class="note" style="margin-top:12px" id="bt-foot"></p>
+    </div>
+  </div>
+</section>
+
+<!-- SOON -->
+<section id="soon">
+  <div class="wrap">
+    <h2>जो बन रहा है</h2>
+    <p class="sub">ये अभी तैयार नहीं हैं। तैयार होते ही यहाँ और Telegram चैनल पर बताएँगे।</p>
+    <div class="soon">
+      <div class="panel"><h3>AI मार्केट सहायक</h3><p>सवाल पूछो, हिंदी में चार्ट और ख़बर का मतलब समझो।</p></div>
+      <div class="panel"><h3>ब्रेकआउट और फ़ेकआउट पहचान</h3><p>कीमत किसी स्तर के पार गई तो असली या झूठी, इसका स्वचालित विश्लेषण।</p></div>
+      <div class="panel"><h3>संस्थागत गतिविधि</h3><p>ETF में पैसे का आना-जाना और बड़े लेन-देन की ख़बरें, आसान भाषा में।</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TELEGRAM -->
+<section id="telegram">
+  <div class="wrap">
+    <div class="tg">
+      <div>
+        <h2>मार्केट गिरे या चढ़े, ख़बर सबसे पहले मिले</h2>
+        <p>Telegram चैनल पर Bitcoin, Ethereum, Gold, EUR/USD और Nasdaq की बड़ी हलचल पर चार्ट और हिंदी विश्लेषण अपने आप आता है। हर मार्केट का अपना हैशटैग है, जैसे #Bitcoin, ताकि सिर्फ़ अपनी पसंद का देख सको।</p>
+        <div class="cta" style="margin-top:16px"><a class="btn gold" href="https://t.me/kartiktradinghindi" target="_blank" rel="noopener">चैनल से जुड़ो</a></div>
+      </div>
+      <div class="sample" aria-label="अलर्ट का नमूना">
+        <b>नमूना अलर्ट (उदाहरण)</b>
+        🟠 BITCOIN अलर्ट: गिरावट 📉<br>
+        1 घंटे में −1.8% · 24 घंटे में −3.2%<br>
+        कुल संकेत: मंदी की ओर झुकाव<br>
+        सपोर्ट और रेज़िस्टेंस, RSI, MACD का पूरा विश्लेषण नीचे आसान भाषा में।
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="links"><a href="https://kartiktradinghindi.blogspot.com/p/learn.html" target="_blank" rel="noopener">सीखने के लेख</a><a href="https://kartiktradinghindi.blogspot.com/" target="_blank" rel="noopener">ब्लॉग</a><a href="https://t.me/kartiktradinghindi" target="_blank" rel="noopener">Telegram</a></div>
+    <p><b>अस्वीकरण:</b> यह वेबसाइट सिर्फ़ शिक्षा और जानकारी के लिए है। यहाँ कुछ भी ख़रीदने, बेचने या निवेश की सलाह नहीं है। हम SEBI के पंजीकृत निवेश सलाहकार नहीं हैं। Crypto और Forex में पूरी पूँजी डूब सकती है। बैकटेस्ट पुराने भावों पर चलता है और भविष्य के नतीजे की गारंटी नहीं देता। फ़ैसला अपनी ज़िम्मेदारी पर लें।</p>
+    <p>चार्ट और इंडिकेटर TradingView के मुफ़्त विजेट से हैं, लाइव कीमतें Binance और Fear &amp; Greed alternative.me से। इन तीनों से हमारा कोई संबंध नहीं है।</p>
+    <p>© Kartik Trading Hindi</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)}, $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+var fmt=function(v,d){return Number(v).toLocaleString('en-IN',{minimumFractionDigits:d||0,maximumFractionDigits:d||0})};
+
+/* ---------- TradingView widgets (lazy) ---------- */
+function tv(id,name,cfg){
+  var el=document.getElementById(id); if(!el) return;
+  el.innerHTML='';
+  var box=document.createElement('div'); box.className='tradingview-widget-container'; box.style.height='100%'; box.style.width='100%';
+  var w=document.createElement('div'); w.className='tradingview-widget-container__widget'; w.style.height='100%'; w.style.width='100%';
+  var s=document.createElement('script'); s.async=true; s.type='text/javascript';
+  s.src='https://s3.tradingview.com/external-embedding/embed-widget-'+name+'.js';
+  s.text=JSON.stringify(cfg);
+  box.appendChild(w); box.appendChild(s); el.appendChild(box);
+}
+var SYMS=[['Bitcoin','BINANCE:BTCUSDT'],['Ethereum','BINANCE:ETHUSDT'],['Gold','OANDA:XAUUSD'],['EUR/USD','FX:EURUSD'],['Nasdaq','FOREXCOM:NSXUSD']];
+function lazy(id,fn){
+  var el=document.getElementById(id); if(!el) return;
+  if(!('IntersectionObserver' in window)){fn();return}
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){io.disconnect();fn()}})},{rootMargin:'400px'});
+  io.observe(el);
+}
+lazy('tv-tape',function(){tv('tv-tape','ticker-tape',{symbols:SYMS.map(function(s){return{proName:s[1],title:s[0]}}),showSymbolLogo:true,colorTheme:'dark',isTransparent:true,displayMode:'adaptive',locale:'in'})});
+lazy('tv-overview',function(){tv('tv-overview','market-overview',{colorTheme:'dark',dateRange:'1D',showChart:true,locale:'in',isTransparent:true,showSymbolLogo:true,showFloatingTooltip:true,width:'100%',height:'520',
+  tabs:[
+   {title:'Crypto',symbols:[{s:'BINANCE:BTCUSDT',d:'Bitcoin'},{s:'BINANCE:ETHUSDT',d:'Ethereum'},{s:'BINANCE:BNBUSDT',d:'BNB'},{s:'BINANCE:SOLUSDT',d:'Solana'},{s:'BINANCE:XRPUSDT',d:'XRP'}]},
+   {title:'Forex',symbols:[{s:'FX:EURUSD',d:'EUR/USD'},{s:'FX:GBPUSD',d:'GBP/USD'},{s:'FX:USDJPY',d:'USD/JPY'},{s:'FX_IDC:USDINR',d:'USD/INR'}]},
+   {title:'इंडेक्स और सोना',symbols:[{s:'FOREXCOM:NSXUSD',d:'Nasdaq 100'},{s:'FOREXCOM:SPXUSD',d:'S&P 500'},{s:'OANDA:XAUUSD',d:'Gold'},{s:'TVC:USOIL',d:'Crude Oil'}]}
+  ]})});
+
+function chips(id,onPick){
+  var box=document.getElementById(id);
+  SYMS.forEach(function(s,i){
+    var b=document.createElement('button'); b.className='chip'; b.type='button'; b.textContent=s[0]; b.setAttribute('aria-pressed',i===0?'true':'false');
+    b.addEventListener('click',function(){$$('#'+id+' .chip').forEach(function(c){c.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');onPick(s[1])});
+    box.appendChild(b);
+  });
+}
+function chartW(sym){tv('tv-chart','advanced-chart',{autosize:true,symbol:sym,interval:'60',timezone:'Asia/Kolkata',theme:'dark',style:'1',locale:'in',allow_symbol_change:true,hide_side_toolbar:false,studies:['RSI@tv-basicstudies'],support_host:'https://www.tradingview.com'})}
+function taW(sym){tv('tv-ta','technical-analysis',{interval:'1h',width:'100%',height:'480',isTransparent:true,symbol:sym,showIntervalTabs:true,displayMode:'single',locale:'in',colorTheme:'dark'})}
+chips('chart-chips',chartW); chips('ta-chips',taW);
+lazy('tv-chart',function(){chartW(SYMS[0][1])});
+lazy('tv-ta',function(){taW(SYMS[0][1])});
+lazy('tv-cal',function(){tv('tv-cal','events',{colorTheme:'dark',isTransparent:true,width:'100%',height:'520',locale:'in',importanceFilter:'-1,0,1',countryFilter:'us,in,eu,gb,jp,cn'})});
+
+/* ---------- live hero (Binance) ---------- */
+var last={};
+function setPx(el,v,key){
+  var old=last[key]; el.textContent=v.txt;
+  if(old!==undefined&&v.n!==old){el.classList.remove('flash-up','flash-dn');void el.offsetWidth;el.classList.add(v.n>old?'flash-up':'flash-dn')}
+  last[key]=v.n;
+}
+function spark(vals){
+  var cv=$('#lv-spark'),dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;
+  cv.width=w*dpr;cv.height=h*dpr;var c=cv.getContext('2d');c.scale(dpr,dpr);c.clearRect(0,0,w,h);
+  var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),up=vals[vals.length-1]>=vals[0],col=up?'#22c55e':'#ef4444';
+  var X=function(i){return i/(vals.length-1)*(w-2)+1},Y=function(v){return h-4-(v-mn)/(mx-mn||1)*(h-10)};
+  c.beginPath();vals.forEach(function(v,i){i?c.lineTo(X(i),Y(v)):c.moveTo(X(i),Y(v))});
+  c.strokeStyle=col;c.lineWidth=2;c.lineJoin='round';c.stroke();
+  c.lineTo(X(vals.length-1),h);c.lineTo(X(0),h);c.closePath();
+  var g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,col+'44');g.addColorStop(1,col+'00');c.fillStyle=g;c.fill();
+}
+function live(){
+  var syms=encodeURIComponent(JSON.stringify(['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT']));
+  fetch('https://api.binance.com/api/v3/ticker/24hr?symbols='+syms).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(a){
+    var m={};a.forEach(function(x){m[x.symbol]=x});
+    var b=m.BTCUSDT,p=+b.lastPrice,ch=+b.priceChangePercent;
+    setPx($('#lv-px'),{n:p,txt:'$'+fmt(p,p<1000?2:0)},'btc');
+    var cEl=$('#lv-chg');cEl.textContent='24 घंटे: '+(ch>=0?'+':'')+ch.toFixed(2)+'%';cEl.className='chg num '+(ch>=0?'up':'dn');
+    setPx($('#m-eth'),{n:+m.ETHUSDT.lastPrice,txt:'$'+fmt(m.ETHUSDT.lastPrice,0)},'eth');
+    setPx($('#m-bnb'),{n:+m.BNBUSDT.lastPrice,txt:'$'+fmt(m.BNBUSDT.lastPrice,0)},'bnb');
+    setPx($('#m-sol'),{n:+m.SOLUSDT.lastPrice,txt:'$'+fmt(m.SOLUSDT.lastPrice,2)},'sol');
+    $('#lv-time').textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    $('#lv-note').textContent='';
+  }).catch(function(){$('#lv-note').textContent='लाइव कीमत अभी नहीं आ पा रही। ऊपर की पट्टी और नीचे के चार्ट फिर भी चलेंगे।'});
+}
+function sparkLoad(){
+  fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=48').then(function(r){return r.json()}).then(function(k){spark(k.map(function(x){return +x[4]}))}).catch(function(){});
+}
+live();sparkLoad();setInterval(live,15000);setInterval(sparkLoad,300000);
+window.addEventListener('resize',function(){clearTimeout(window.__rs);window.__rs=setTimeout(sparkLoad,250)});
+
+/* ---------- fear & greed ---------- */
+(function(){
+  var HI={'Extreme Fear':'अत्यधिक डर','Fear':'डर','Neutral':'सामान्य','Greed':'लालच','Extreme Greed':'अत्यधिक लालच'};
+  fetch('https://api.alternative.me/fng/?limit=1').then(function(r){return r.json()}).then(function(j){
+    var d=j.data[0],v=+d.value;
+    $('#fg-n').textContent=v;$('#fg-l').textContent=HI[d.value_classification]||d.value_classification;
+    $('#fg-i').style.left=v+'%';
+    $('#fg-d').textContent=v<30?'लोग घबराकर बेच रहे हैं':v>70?'लोग जोश में ख़रीद रहे हैं':'न ज़्यादा डर, न ज़्यादा लालच';
+  }).catch(function(){$('#fg-l').textContent='अभी उपलब्ध नहीं'});
+})();
+
+/* ---------- quiz ---------- */
+(function(){
+  var Q=[
+   {q:'हरी (बुलिश) कैंडल का क्या मतलब है?',o:['बंद भाव, खुले भाव से ऊपर रहा','बंद भाव, खुले भाव से नीचे रहा','उस दिन कोई ट्रेड नहीं हुआ'],a:0,w:'हरी कैंडल में भाव खुलने के बाद चढ़कर बंद हुआ।'},
+   {q:'सपोर्ट क्या होता है?',o:['वह भाव जहाँ गिरावट पहले रुकी थी','वह भाव जहाँ चढ़ाई पहले रुकी थी','ब्रोकर की मदद वाली लाइन'],a:0,w:'सपोर्ट बाज़ार का फ़र्श है। रेज़िस्टेंस उसकी छत है।'},
+   {q:'Stop Loss क्यों लगाया जाता है?',o:['मुनाफ़ा बढ़ाने के लिए','नुकसान की सीमा पहले से तय करने के लिए','ब्रोकर फ़ीस घटाने के लिए'],a:1,w:'Stop Loss बताता है कि ग़लत निकलने पर कितना नुकसान मंज़ूर है।'},
+   {q:'RSI 78 दिखे तो इसका आम मतलब क्या है?',o:['बहुत ज़्यादा ख़रीदारी हो चुकी है','बहुत ज़्यादा बिकवाली हो चुकी है','इंडिकेटर ख़राब है'],a:0,w:'70 से ऊपर को ओवरबॉट कहते हैं। इसका मतलब नरमी आ सकती है, पक्का नहीं।'},
+   {q:'1:3 रिस्क-रिवॉर्ड का मतलब क्या है?',o:['3 रुपये जोखिम पर 1 रुपया फ़ायदा','1 रुपया जोखिम पर 3 रुपये संभावित फ़ायदा','हर 3 में से 1 ट्रेड जीतना'],a:1,w:'ऐसे में 3 में से सिर्फ़ 1 ट्रेड जीतने पर भी घाटा नहीं होता।'}
+  ];
+  var i=0,score=0,body=$('#quiz-body');
+  function show(){
+    if(i>=Q.length){body.innerHTML='<p class="q">आपका स्कोर: <b>'+score+' / '+Q.length+'</b></p><p class="why">'+(score>=4?'बहुत बढ़िया। अब स्ट्रैटेजी लैब में रणनीति आज़माओ।':'कोई बात नहीं। स्तर 1 के लेख दोबारा पढ़कर फिर कोशिश करो।')+'</p><button class="btn" id="q-re" style="margin-top:12px">फिर से खेलो</button>';$('#q-re').onclick=function(){i=0;score=0;show()};return}
+    var q=Q[i];
+    body.innerHTML='<p class="note">सवाल '+(i+1)+' / '+Q.length+'</p><p class="q">'+q.q+'</p><div class="opts"></div><p class="why" id="q-why"></p>';
+    var box=body.querySelector('.opts'),done=false;
+    q.o.forEach(function(t,k){
+      var b=document.createElement('button');b.className='opt';b.type='button';b.textContent=t;
+      b.onclick=function(){
+        if(done)return;done=true;
+        var kids=box.children;kids[q.a].classList.add('ok');
+        if(k===q.a){score++}else{b.classList.add('bad')}
+        $('#q-why').textContent=(k===q.a?'सही। ':'ग़लत। ')+q.w;
+        var nx=document.createElement('button');nx.className='btn sm';nx.style.marginTop='12px';nx.textContent=i<Q.length-1?'अगला सवाल':'स्कोर देखो';
+        nx.onclick=function(){i++;show()};body.appendChild(nx);
+      };
+      box.appendChild(b);
+    });
+  }
+  show();
+})();
+
+/* ---------- calculators ---------- */
+$$('#tool-tabs .chip').forEach(function(b){b.addEventListener('click',function(){
+  $$('#tool-tabs .chip').forEach(function(c){c.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');
+  $$('.tabpane').forEach(function(p){p.hidden=p.id!==b.dataset.t});
+})});
+function num(id){return parseFloat(document.getElementById(id).value)}
+function kpi(l,v,cls){return '<div class="kpi"><span>'+l+'</span><b class="'+(cls||'')+'">'+v+'</b></div>'}
+function show(n,html,err){
+  var e=document.getElementById('e'+n),o=document.getElementById('o'+n);
+  if(err){e.textContent=err;e.hidden=false;o.hidden=true}else{e.hidden=true;o.innerHTML=html;o.hidden=false}
+}
+var CALC={
+ c1:function(){
+  var c=num('a-cap'),r=num('a-rp'),e=num('a-en'),s=num('a-sl'),d=Math.abs(e-s);
+  if([c,r,e,s].some(isNaN)||c<=0||r<=0||d===0) return show(1,'','सभी खाने सही भरो। Entry और Stop Loss अलग होने चाहिए।');
+  var risk=c*r/100,q=risk/d,val=q*e;
+  show(1,kpi('जोखिम की रक़म',fmt(risk,2))+kpi('पोज़िशन साइज़ (units)',fmt(q,4))+kpi('पोज़िशन की क़ीमत',fmt(val,2))+kpi('ज़रूरी लीवरेज',(val/c).toFixed(2)+'x'));
+ },
+ c2:function(){
+  var e=num('b-en'),s=num('b-sl'),t=num('b-tg'),q=num('b-q'),d=Math.abs(e-s);
+  if([e,s,t,q].some(isNaN)||d===0||q<=0) return show(2,'','सभी खाने सही भरो। Entry और Stop Loss अलग होने चाहिए।');
+  var rr=Math.abs(t-e)/d,win=1/(1+rr)*100;
+  show(2,kpi('रिस्क : रिवॉर्ड','1 : '+rr.toFixed(2))+kpi('हारने पर नुकसान',fmt(d*q,2),'dn')+kpi('जीतने पर फ़ायदा',fmt(Math.abs(t-e)*q,2),'up')+kpi('घाटे से बचने को ज़रूरी जीत दर',win.toFixed(1)+'%'));
+ },
+ c3:function(){
+  var l=num('p-lot'),p=num('p-pip'),v=num('p-val');
+  if([l,p,v].some(isNaN)||l<=0||v<=0) return show(3,'','सभी खाने सही भरो।');
+  var pv=l*v,pl=pv*p;
+  show(3,kpi('1 pip की क़ीमत ($)',fmt(pv,2))+kpi(pl>=0?'कुल मुनाफ़ा ($)':'कुल नुकसान ($)',fmt(Math.abs(pl),2),pl>=0?'up':'dn'));
+ },
+ c4:function(){
+  var s=num('d-st'),a=num('d-ad')||0,r=num('d-r'),m=Math.round(num('d-m'));
+  if([s,r,m].some(isNaN)||s<0||m<1||m>600) return show(4,'','सभी खाने सही भरो। महीने 1 से 600 के बीच रखो।');
+  var v=s,put=s;for(var i=0;i<m;i++){v=v*(1+r/100)+a;put+=a}
+  put=s+a*m;
+  show(4,kpi('अंत में पूँजी',fmt(v,0))+kpi('कुल लगाया',fmt(put,0))+kpi('कुल फ़ायदा',fmt(v-put,0),v>=put?'up':'dn')+kpi('कुल वृद्धि',((v/put-1)*100).toFixed(1)+'%'));
+ }
+};
+$$('[data-calc]').forEach(function(b){b.addEventListener('click',function(){CALC[b.dataset.calc]()})});
+$$('.tabpane input').forEach(function(i){i.addEventListener('keydown',function(e){if(e.key==='Enter'){var b=i.closest('.tabpane').querySelector('[data-calc]');if(b)b.click()}})});
+
+/* ---------- strategy lab ---------- */
+var ST={
+ ema:{la:'तेज़ EMA',lb:'धीमी EMA',a:20,b:50,h:'तेज़ EMA, धीमी EMA के ऊपर जाए तो ख़रीदो, नीचे जाए तो बेचकर निकल जाओ।'},
+ rsi:{la:'RSI इससे नीचे हो तो ख़रीदो',lb:'RSI इससे ऊपर हो तो बेचो',a:30,b:55,h:'RSI बहुत नीचे गिरे तो ख़रीदो, ठीक होकर ऊपर आए तो निकल जाओ।'},
+ brk:{la:'पिछली कितनी कैंडल की ऊँचाई पार करे तो ख़रीदो',lb:'पिछली कितनी कैंडल की नीचाई टूटे तो बेचो',a:20,b:10,h:'भाव पिछली ऊँचाई के पार जाए तो ख़रीदो, छोटी नीचाई टूटे तो निकल जाओ।'}
+};
+function stUI(){var s=ST[$('#bt-st').value];$('#bt-la').textContent=s.la;$('#bt-lb').textContent=s.lb;$('#bt-a').value=s.a;$('#bt-b').value=s.b;$('#bt-help').textContent=s.h+' सिर्फ़ ख़रीद (लॉन्ग) वाली रणनीतियाँ हैं और हर सिग्नल के अगली कैंडल की शुरुआत पर ट्रेड माना गया है।'}
+$('#bt-st').addEventListener('change',stUI);stUI();
+
+function emaA(arr,n){var k=2/(n+1),p=arr[0],o=[];for(var i=0;i<arr.length;i++){p=i?arr[i]*k+p*(1-k):arr[i];o.push(p)}return o}
+function rsiA(c,n){
+  var o=new Array(c.length).fill(50),g=0,l=0;
+  for(var i=1;i<c.length;i++){
+    var d=c[i]-c[i-1],up=d>0?d:0,dn=d<0?-d:0;
+    if(i<=n){g+=up/n;l+=dn/n;if(i===n)o[i]=l===0?100:100-100/(1+g/l)}
+    else{g=(g*(n-1)+up)/n;l=(l*(n-1)+dn)/n;o[i]=l===0?100:100-100/(1+g/l)}
+  }
+  return o;
+}
+function signals(st,H,L,C,a,b){
+  var n=C.length,w=new Array(n).fill(0),pos=0,i;
+  if(st==='ema'){var f=emaA(C,a),s=emaA(C,b);for(i=b;i<n;i++)w[i]=f[i]>s[i]?1:0}
+  else if(st==='rsi'){var r=rsiA(C,14);for(i=15;i<n;i++){if(!pos&&r[i]<a)pos=1;else if(pos&&r[i]>b)pos=0;w[i]=pos}}
+  else{for(i=Math.max(a,b);i<n;i++){var hh=-Infinity,ll=Infinity,j;for(j=i-a;j<i;j++)if(H[j]>hh)hh=H[j];for(j=i-b;j<i;j++)if(L[j]<ll)ll=L[j];
+    if(!pos&&C[i]>hh)pos=1;else if(pos&&C[i]<ll)pos=0;w[i]=pos}}
+  return w;
+}
+function backtest(O,H,L,C,T,st,a,b,fee){
+  var n=C.length,w=signals(st,H,L,C,a,b),eq=1,pos=0,eqIn=1,pIn=0,iIn=0,curve=[1],trades=[];
+  for(var i=1;i<n;i++){
+    var want=w[i-1];
+    if(pos&&!want){eq*=O[i]/C[i-1];eq*=(1-fee);trades.push({i0:iIn,i1:i,p0:pIn,p1:O[i],r:eq/eqIn-1});pos=0}
+    else if(!pos&&want){eqIn=eq;eq*=(1-fee);pos=1;pIn=O[i];iIn=i;eq*=C[i]/O[i]}
+    else if(pos){eq*=C[i]/C[i-1]}
+    curve.push(eq);
+  }
+  var open=false;
+  if(pos){trades.push({i0:iIn,i1:n-1,p0:pIn,p1:C[n-1],r:eq/eqIn-1,open:true});open=true}
+  var peak=1,mdd=0;curve.forEach(function(v){if(v>peak)peak=v;var d=v/peak-1;if(d<mdd)mdd=d});
+  var wins=trades.filter(function(t){return t.r>0}),gp=0,gl=0;
+  trades.forEach(function(t){if(t.r>0)gp+=t.r;else gl+=-t.r});
+  return{curve:curve,bh:C.map(function(v){return v/C[0]}),trades:trades,total:eq-1,hold:C[n-1]/C[0]-1,mdd:mdd,
+    win:trades.length?wins.length/trades.length:0,pf:gl>0?gp/gl:(gp>0?Infinity:0),open:open,n:n};
+}
+function drawCurve(r){
+  var cv=$('#bt-cv'),dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;
+  cv.width=w*dpr;cv.height=h*dpr;var c=cv.getContext('2d');c.scale(dpr,dpr);c.clearRect(0,0,w,h);
+  var all=r.curve.concat(r.bh),mn=Math.min.apply(null,all),mx=Math.max.apply(null,all),pad=[8,44,8,8];
+  var X=function(i){return pad[3]+i/(r.n-1)*(w-pad[1]-pad[3])},Y=function(v){return h-pad[2]-(v-mn)/(mx-mn||1)*(h-pad[0]-pad[2])};
+  c.font='12px Hind, sans-serif';c.fillStyle='#93a1bd';c.strokeStyle='#1f2b45';c.lineWidth=1;
+  for(var g=0;g<=4;g++){var v=mn+(mx-mn)*g/4,y=Y(v);c.beginPath();c.moveTo(pad[3],y);c.lineTo(w-pad[1],y);c.stroke();c.fillText((v).toFixed(2)+'x',w-pad[1]+4,y+4)}
+  var line=function(a,col,lw){c.beginPath();a.forEach(function(v,i){i?c.lineTo(X(i),Y(v)):c.moveTo(X(i),Y(v))});c.strokeStyle=col;c.lineWidth=lw;c.lineJoin='round';c.stroke()};
+  line(r.bh,'#64748b',1.6);line(r.curve,'#ffb02e',2.2);
+}
+function pct(v,d){return (v>=0?'+':'')+(v*100).toFixed(d||1)+'%'}
+$('#bt-run').addEventListener('click',function(){
+  var err=$('#bt-err'),out=$('#bt-out'),btn=this;
+  var sym=$('#bt-sym').value,tf=$('#bt-tf').value,st=$('#bt-st').value,a=parseInt($('#bt-a').value,10),b=parseInt($('#bt-b').value,10),fee=parseFloat($('#bt-fee').value)/100;
+  err.hidden=true;
+  if(!(a>0)||!(b>0)||isNaN(fee)||fee<0||fee>0.05){err.textContent='संख्याएँ सही भरो। फ़ीस 0 से 5% के बीच रखो।';err.hidden=false;return}
+  if(st==='ema'&&a>=b){err.textContent='तेज़ EMA की संख्या धीमी EMA से छोटी होनी चाहिए।';err.hidden=false;return}
+  if(st==='rsi'&&a>=b){err.textContent='ख़रीदने वाला RSI, बेचने वाले RSI से छोटा होना चाहिए।';err.hidden=false;return}
+  btn.disabled=true;btn.textContent='डेटा आ रहा है…';
+  fetch('https://api.binance.com/api/v3/klines?symbol='+sym+'&interval='+tf+'&limit=1000').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(k){
+    var T=k.map(function(x){return x[0]}),O=k.map(function(x){return +x[1]}),H=k.map(function(x){return +x[2]}),L=k.map(function(x){return +x[3]}),C=k.map(function(x){return +x[4]});
+    if(C.length<Math.max(a,b)+30)throw 1;
+    var r=backtest(O,H,L,C,T,st,a,b,fee);
+    var d0=new Date(T[0]).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),d1=new Date(T[T.length-1]).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+    $('#bt-kpis').innerHTML=
+      kpi('रणनीति का रिटर्न',pct(r.total),r.total>=0?'up':'dn')+kpi('सिर्फ़ ख़रीदकर रखने पर',pct(r.hold),r.hold>=0?'up':'dn')+
+      kpi('सबसे बड़ी गिरावट',pct(r.mdd),'dn')+kpi('ट्रेड की संख्या',String(r.trades.length))+
+      kpi('जीत दर',(r.win*100).toFixed(0)+'%')+kpi('Profit factor',r.pf===Infinity?'∞':r.pf.toFixed(2))+
+      kpi('कैंडल की संख्या',String(r.n))+kpi('अवधि',d0+' से '+d1);
+    out.hidden=false;drawCurve(r);
+    var rows=r.trades.slice(-8).reverse().map(function(t){
+      var f=function(i){return new Date(T[i]).toLocaleDateString('en-IN',{day:'numeric',month:'short'})};
+      return '<tr><td>'+f(t.i0)+' से '+f(t.i1)+(t.open?' (खुला)':'')+'</td><td>'+fmt(t.p0,t.p0<10?4:2)+'</td><td>'+fmt(t.p1,t.p1<10?4:2)+'</td><td class="'+(t.r>=0?'up':'dn')+'">'+pct(t.r,2)+'</td></tr>';
+    }).join('');
+    $('#bt-tbl').innerHTML='<tr><th>अवधि</th><th>Entry</th><th>Exit</th><th>नतीजा</th></tr>'+(rows||'<tr><td colspan="4" style="text-align:left;color:var(--mu)">इस सेटिंग में कोई ट्रेड नहीं बना। संख्याएँ बदलकर देखो।</td></tr>');
+    $('#bt-foot').textContent='पिछले '+r.n+' कैंडल पर चला। हर ट्रेड में पूरी पूँजी लगाई गई और दोनों तरफ़ '+(fee*100).toFixed(2)+'% फ़ीस जोड़ी गई। स्लिपेज, लीवरेज और टैक्स शामिल नहीं हैं। पुराने नतीजे भविष्य की गारंटी नहीं हैं।';
+  }).catch(function(e){
+    err.textContent=e===1?'इस सेटिंग के लिए डेटा कम है। छोटी संख्याएँ रखो।':'डेटा नहीं आ पाया। इंटरनेट जाँचो और फिर कोशिश करो। (Binance कुछ नेटवर्क पर बंद रहता है।)';
+    err.hidden=false;
+  }).then(function(){btn.disabled=false;btn.textContent='बैकटेस्ट चलाओ'});
+});
+})();
+</script>
+</body>
+</html>
