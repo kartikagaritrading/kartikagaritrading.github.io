@@ -5,7 +5,7 @@
   "dash": 23,
   "cd": {},
   "tf": {
-   "5m": "side",
+   "5m": "down",
    "15m": "down",
    "1h": "down",
    "4h": "down",
@@ -20,7 +20,7 @@
   "dash": 26,
   "cd": {},
   "tf": {
-   "5m": "side",
+   "5m": "down",
    "15m": "down",
    "1h": "down",
    "4h": "down",
@@ -33,11 +33,13 @@
   "photo": 27,
   "text": 28,
   "dash": 29,
-  "cd": {},
+  "cd": {
+   "tf_1h": 1793982064.5933187
+  },
   "tf": {
-   "5m": "up",
+   "5m": "side",
    "15m": "side",
-   "1h": "up",
+   "1h": "side",
    "4h": "up",
    "1d": "down",
    "1w": "side"
@@ -63,15 +65,17 @@
   "photo": 33,
   "text": 34,
   "dash": 35,
-  "cd": {},
+  "cd": {
+   "rsi": 1793982064.5933187
+  },
   "tf": {
-   "5m": "down",
+   "5m": "up",
    "15m": "down",
    "1h": "down",
    "4h": "down",
    "1d": "down",
    "1w": "side"
   },
-  "rz": "os"
+  "rz": "n"
  }
 }
