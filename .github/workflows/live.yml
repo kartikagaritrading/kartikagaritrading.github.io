@@ -1,0 +1,40 @@
+name: Live board
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+    inputs:
+      new:
+        description: "1 likho to sab sandesh naye bhejega"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: live-board
+  cancel-in-progress: false
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests numpy pandas yfinance matplotlib
+      - name: Board update karo
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          FORCE_NEW: ${{ github.event.inputs.new }}
+        run: python live_board.py
+      - name: Sandesh ki pehchaan yaad rakho
+        run: |
+          git config user.name "live-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add live_state.json || true
+          git diff --cached --quiet || (git commit -m "live state" && git pull --rebase && git push)
