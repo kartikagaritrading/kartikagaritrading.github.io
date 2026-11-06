@@ -1,0 +1,40 @@
+name: Badi khabar chetavni
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "1 likho to abhi namuna bhejega"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: news-alert
+  cancel-in-progress: false
+
+jobs:
+  news:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests numpy pandas yfinance matplotlib
+      - name: Khabar dekho aur bhejo
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TEST_NEWS: ${{ github.event.inputs.test }}
+        run: python news_alert.py
+      - name: Bheji ho chuki khabrein yaad rakho
+        run: |
+          git config user.name "news-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add sent_news.json || true
+          git diff --cached --quiet || (git commit -m "sent news" && git push)
