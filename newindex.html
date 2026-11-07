@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kartik Trading | Learn trading by doing: live charts, practice and strategy lab</title>
+<meta name="description" content="Learn crypto and forex trading by doing. Live charts, multi-timeframe analysis, a paper-trading arena, calculators, a strategy lab and Hindi market alerts on Telegram. Free.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23070b14'/%3E%3Cpath d='M8 22l5-7 4 4 7-10' fill='none' stroke='%23ffb02e' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=11">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><i></i>Kartik Trading</a>
+    <nav aria-label="Main menu">
+      <a href="#course">Course</a>
+      <a href="#today">Today</a>
+      <a href="#tutor">AI Guru</a>
+      <a href="#visual">Play &amp; learn</a>
+      <a href="#practice">Practice</a>
+      <a href="#markets">Markets</a>
+      <a href="#chart">Charts</a>
+      <a href="#analysis">Analysis</a>
+      <a href="#calendar">Calendar</a>
+      <a href="#learn">Learn</a>
+      <a href="#tools">Tools</a>
+      <a href="#lab">Strategy lab</a>
+    </nav>
+    <a class="btn gold sm" href="https://t.me/kartiktradinghindi" target="_blank" rel="noopener">Join Telegram</a>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <h1>Learn trading by doing. Test your strategy before you risk a rupee.</h1>
+      <p class="lead">Live crypto and forex charts, analysis on every timeframe, calculators and backtests. A clear path for new traders, a testing ground for experienced ones.</p>
+      <div class="cta">
+        <a class="btn gold" href="https://t.me/kartiktradinghindi" target="_blank" rel="noopener">Get alerts on Telegram</a>
+        <a class="btn" href="#path">I am new</a>
+      </div>
+      <div class="trust"><span>Completely free</span><span>We do not sell trade signals</span><span>Education only</span></div>
+    </div>
+    <div class="live" aria-live="polite">
+      <div class="row1"><span class="tag">Bitcoin (BTC/USDT) · live</span><span class="note" id="lv-time">…</span></div>
+      <div class="px num" id="lv-px">—</div>
+      <div class="chg num" id="lv-chg">24h: —</div>
+      <canvas id="lv-spark" aria-label="Bitcoin chart for the last 48 hours"></canvas>
+      <div class="mini">
+        <div>ETH<b id="m-eth" class="num">—</b></div>
+        <div>BNB<b id="m-bnb" class="num">—</b></div>
+        <div>SOL<b id="m-sol" class="num">—</b></div>
+      </div>
+      <p class="note" id="lv-note" style="margin-top:8px"></p>
+    </div>
+  </div>
+  <div class="stats">
+    <div><b>24</b><span>lessons with the AI Guru</span></div>
+    <div><b>5</b><span>markets with live charts</span></div>
+    <div><b>4+3</b><span>calculators and strategies</span></div>
+    <div><b>₹0</b><span>free, always</span></div>
+  </div>
+</section>
+
+<!-- PATH -->
+<section id="path" style="padding:30px 0">
+  <div class="wrap">
+    <div class="paths">
+      <a class="pcard" href="#course">
+        <h3>I am new to trading</h3>
+        <p>Start from zero. A 4-week path with 20 small tasks: lessons in simple Hindi, games, then paper trading.</p>
+        <span class="btn gold sm">Start the 4-week path</span>
+      </a>
+      <a class="pcard" href="#chart">
+        <h3>I already trade</h3>
+        <p>Live charts, a meter for every timeframe and a backtest for your own strategy. Straight to work.</p>
+        <span class="btn sm">Open charts and lab</span>
+      </a>
+    </div>
+    <div class="story">
+      <p><b>I am Kartik,</b> from a village in Almora, Uttarakhand. I trade crypto and forex. What I learn, I share here for free in Hindi, so you do not have to make the mistakes I had to make.</p>
+    </div>
+  </div>
+</section>
+
+<div class="wrap" style="padding-bottom:30px">
+  <div class="tvbox" id="tv-tape" style="min-height:76px"></div>
+</div>
+
+<!-- COURSE -->
+<section id="course">
+  <div class="wrap">
+    <h2>4-week path: from zero to your first practice trades</h2>
+    <p class="sub">20 small tasks, about 20 minutes each. Tap a task to open it, then tick it off. Your progress is saved on this phone.</p>
+    <div class="panel" style="padding:18px">
+      <div class="cprog"><div class="cbar"><i id="cb-fill"></i></div><b id="cb-txt" class="num"></b></div>
+      <div class="cta" style="margin:12px 0 0"><button class="btn gold" type="button" id="cb-next"></button><button class="btn sm" type="button" id="cb-reset">Reset progress</button></div>
+      <p id="cb-done" class="vzmsg" hidden></p>
+    </div>
+    <div class="weeks" id="weeks"></div>
+  </div>
+</section>
+
+<!-- TODAY -->
+<section id="today">
+  <div class="wrap">
+    <h2>Today in the market</h2>
+    <p class="sub">Built automatically from live data and refreshed every 5 minutes. This is indicator maths, not advice to buy or sell.</p>
+    <div class="sumgrid" id="sumgrid"></div>
+    <p class="note" id="sum-note" style="margin-top:10px"></p>
+  </div>
+</section>
+
+<!-- TUTOR -->
+<section id="tutor">
+  <div class="wrap">
+    <h2>AI Guru: learn everything, in Hindi</h2>
+    <p class="sub">Ask in Hindi or English, or pick a topic. The Guru explains in simple Hindi with examples and tells you what to learn next.</p>
+    <div class="tutor">
+      <div class="topics" id="topics" aria-label="Topics"></div>
+      <div class="chatbox">
+        <div class="msgs" id="msgs" aria-live="polite"></div>
+        <form class="ask" id="ask"><input id="q" type="text" autocomplete="off" placeholder="Ask: What is RSI?" aria-label="Type your question"><button class="btn gold sm" type="submit">Ask</button></form>
+      </div>
+    </div>
+    <p class="note" style="margin-top:10px">The Guru answers from ready-made lessons, not from an open AI. If a topic has no lesson yet, it says so. Education only, not advice to buy or sell.</p>
+  </div>
+</section>
+
+<!-- VISUAL -->
+<section id="visual">
+  <div class="wrap">
+    <h2>Play and learn</h2>
+    <p class="sub">No reading needed. Move the sliders, tap the chart and see the result yourself. Three games.</p>
+    <div class="chips" id="vz-tabs" role="tablist">
+      <button class="chip" type="button" aria-pressed="true" data-v="v1">Build a candle</button>
+      <button class="chip" type="button" aria-pressed="false" data-v="v2">See the risk</button>
+      <button class="chip" type="button" aria-pressed="false" data-v="v3">Spot the levels</button>
+    </div>
+
+    <div class="panel vz" id="v1">
+      <div class="vzgrid">
+        <canvas id="cd-cv" aria-label="Candlestick drawing"></canvas>
+        <div>
+          <div class="form" style="grid-template-columns:1fr">
+            <label class="field">Open: <b id="o-open" class="num"></b><input id="cd-o" type="range" min="5" max="95" value="40"></label>
+            <label class="field">High: <b id="o-high" class="num"></b><input id="cd-h" type="range" min="5" max="95" value="80"></label>
+            <label class="field">Low: <b id="o-low" class="num"></b><input id="cd-l" type="range" min="5" max="95" value="25"></label>
+            <label class="field">Close: <b id="o-close" class="num"></b><input id="cd-c" type="range" min="5" max="95" value="65"></label>
+          </div>
+          <div class="chips"><button class="chip" type="button" data-p="green">Big green</button><button class="chip" type="button" data-p="red">Big red</button><button class="chip" type="button" data-p="hammer">Hammer</button><button class="chip" type="button" data-p="star">Shooting star</button><button class="chip" type="button" data-p="doji">Doji</button></div>
+        </div>
+      </div>
+      <p class="vzmsg" id="cd-msg" aria-live="polite"></p>
+    </div>
+
+    <div class="panel vz" id="v2" hidden>
+      <div class="vzgrid">
+        <div>
+          <div class="form" style="grid-template-columns:1fr">
+            <label class="field">Capital: <b id="rk-capv" class="num"></b><input id="rk-cap" type="range" min="10000" max="500000" step="10000" value="100000"></label>
+            <label class="field">Risk per trade: <b id="rk-rpv" class="num"></b><input id="rk-rp" type="range" min="0.5" max="10" step="0.5" value="1"></label>
+            <label class="field">Target, times the risk: <b id="rk-rrv" class="num"></b><input id="rk-rr" type="range" min="1" max="5" step="0.5" value="2"></label>
+          </div>
+        </div>
+        <div>
+          <div class="rbar"><div class="rl" id="rk-l"><span id="rk-lt"></span></div><div class="rg" id="rk-g"><span id="rk-gt"></span></div></div>
+          <div class="rlab"><span>If Stop Loss hits</span><span>If Target hits</span></div>
+          <div class="kpis" style="grid-template-columns:1fr 1fr;margin-top:14px"><div class="kpi"><span>Left after 10 losses in a row</span><b id="rk-ten" class="num"></b></div><div class="kpi"><span>Win rate needed to break even</span><b id="rk-win" class="num"></b></div></div>
+        </div>
+      </div>
+      <p class="vzmsg" id="rk-msg" aria-live="polite"></p>
+    </div>
+
+    <div class="panel vz" id="v3" hidden>
+      <p class="vzq" id="sr-q"></p>
+      <canvas id="sr-cv" style="width:100%;height:280px;display:block;border-radius:10px;background:rgba(255,255,255,.04);cursor:crosshair;touch-action:manipulation" aria-label="Chart. Tap where you think the level is"></canvas>
+      <p class="vzmsg" id="sr-msg" aria-live="polite"></p>
+      <button class="btn gold sm" type="button" id="sr-new" style="margin-top:8px">New chart</button>
+    </div>
+  </div>
+</section>
+
+<!-- PRACTICE -->
+<section id="practice">
+  <div class="wrap">
+    <h2>Paper-trading arena: practise without risking money</h2>
+    <p class="sub">You get a virtual $10,000 account and a random, unlabelled slice of real past market. Step candle by candle, buy or sell, use a Stop Loss and see how your decisions hold up.</p>
+    <div class="panel">
+      <div class="form" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+        <label class="field">Market<select id="pr-sym"><option value="BTCUSDT">Bitcoin</option><option value="ETHUSDT">Ethereum</option><option value="SOLUSDT">Solana</option><option value="BNBUSDT">BNB</option></select></label>
+        <label class="field">Timeframe<select id="pr-tf"><option value="1h">1 hour</option><option value="4h" selected>4 hours</option><option value="15m">15 minutes</option></select></label>
+        <label class="field">Stop Loss (%)<select id="pr-sl"><option value="1">1%</option><option value="2" selected>2%</option><option value="3">3%</option><option value="5">5%</option></select></label>
+        <label class="field">Target (times the risk)<select id="pr-rr"><option value="1">1x</option><option value="2" selected>2x</option><option value="3">3x</option></select></label>
+      </div>
+      <button class="btn gold" id="pr-start">Start a new round</button>
+      <div class="err" id="pr-err" hidden></div>
+    </div>
+    <div class="panel" id="pr-box" hidden style="margin-top:14px">
+      <div class="kpis" id="pr-kpis"></div>
+      <canvas id="pr-cv" style="width:100%;height:300px;display:block;background:var(--panel2);border-radius:9px;margin:12px 0" aria-label="Practice candlestick chart"></canvas>
+      <div class="cta" id="pr-btns" style="margin-bottom:8px">
+        <button class="btn" id="pr-n1" type="button">Next candle</button>
+        <button class="btn" id="pr-n5" type="button">Next 5 candles</button>
+        <button class="btn gold" id="pr-buy" type="button">Buy (Long)</button>
+        <button class="btn" id="pr-sell" type="button" style="border-color:#7f1d1d">Sell (Short)</button>
+        <button class="btn" id="pr-close" type="button" disabled>Close trade</button>
+      </div>
+      <p class="note" id="pr-msg" aria-live="polite">&nbsp;</p>
+      <div id="pr-sum" hidden class="panel" style="margin-top:10px;background:var(--panel2)"></div>
+      <p class="note" style="margin-top:8px">Every trade risks 1% of the account and the position is sized to match. Fees and slippage are not included. This is practice, not a real trading result.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MARKETS -->
+<section id="markets">
+  <div class="wrap">
+    <h2>Markets</h2>
+    <p class="sub">Crypto, forex, indices and gold in one place. Tap any name to open its chart.</p>
+    <div class="grid2 ga">
+      <div class="tvbox" id="tv-overview" style="min-height:520px"></div>
+      <div class="panel">
+        <h3>Market mood</h3>
+        <p class="note" style="margin:4px 0 14px">Crypto Fear &amp; Greed index: when fear is high people are selling, when greed is high everyone is buying.</p>
+        <div class="fg"><div class="big" id="fg-n">—</div><div><b id="fg-l">Loading…</b><div class="note" id="fg-d"></div></div></div>
+        <div class="bar"><i id="fg-i" style="left:50%"></i></div>
+        <div style="display:flex;justify-content:space-between" class="note"><span>Extreme fear</span><span>Extreme greed</span></div>
+        <p class="note" style="margin-top:14px">Source: alternative.me. It shows mood only, not a signal to buy or sell.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHART -->
+<section id="chart">
+  <div class="wrap">
+    <h2>Professional live chart</h2>
+    <p class="sub">Drawing tools, indicators and every timeframe are inside the chart. Switch the market above.</p>
+    <div class="chips" id="chart-chips" role="group" aria-label="Chart market"></div>
+    <div class="tvbox" id="tv-chart" style="height:580px"></div>
+  </div>
+</section>
+
+<!-- ANALYSIS -->
+<section id="analysis">
+  <div class="wrap">
+    <h2>Analysis on every timeframe</h2>
+    <p class="sub">From 1 minute to 1 month: dozens of indicators such as RSI, MACD and moving averages combined into one meter. Change the timeframe with the tabs.</p>
+    <div class="chips" id="ta-chips" role="group" aria-label="Analysis market"></div>
+    <div class="grid2 gb">
+      <div class="tvbox" id="tv-ta" style="height:480px;min-width:0"></div>
+      <div class="panel how">
+        <h3>How to read the meter</h3>
+        <div><b>Strong Sell / Sell:</b> Most indicators point down.</div>
+        <div><b>Neutral:</b> Indicators are split; the market has not picked a direction.</div>
+        <div><b>Buy / Strong Buy:</b> Most indicators point up.</div>
+        <div><b>Combine short and long timeframes:</b> if the 5-minute and 15-minute meters say up but the 1-day and 1-week meters say down, the bounce is often weak. The bigger timeframe carries more weight.</div>
+        <div class="note">This is indicator maths, not a prediction. Always decide your Stop Loss before you trade.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALENDAR -->
+<section id="calendar">
+  <div class="wrap">
+    <h2>Economic calendar</h2>
+    <p class="sub">News such as the Fed, inflation and jobs data can move the market suddenly. Check the timing in advance.</p>
+    <div class="tvbox" id="tv-cal" style="height:520px"></div>
+  </div>
+</section>
+
+<!-- LEARN -->
+<section id="learn">
+  <div class="wrap">
+    <h2>Learning path</h2>
+    <p class="sub">Four levels, one after another. Tap any topic and the AI Guru explains it.</p>
+    <div class="levels">
+<div class="lvl open"><span class="badge on">Learn now</span><h3>Level 1: Basics</h3><ul><li><button type="button" class="gl" data-g="forex">Forex, pips and lots</button></li><li><button type="button" class="gl" data-g="crypto">What is crypto</button></li><li><button type="button" class="gl" data-g="candle">Reading candlesticks</button></li><li><button type="button" class="gl" data-g="risk">Risk management</button></li><li><button type="button" class="gl" data-g="psy">Trading psychology</button></li><li><button type="button" class="gl" data-g="longshort">Long and short</button></li></ul><a class="btn gold sm" href="https://kartiktradinghindi.blogspot.com/" target="_blank" rel="noopener">Read Hindi articles</a></div>
+<div class="lvl open"><span class="badge on">Learn now</span><h3>Level 2: Technical analysis</h3><ul><li><button type="button" class="gl" data-g="sr">Support and resistance</button></li><li><button type="button" class="gl" data-g="trend">Trend and trendlines</button></li><li><button type="button" class="gl" data-g="ma">Moving averages</button></li><li><button type="button" class="gl" data-g="rsi">RSI</button></li><li><button type="button" class="gl" data-g="macd">MACD</button></li><li><button type="button" class="gl" data-g="vol">Volume</button></li></ul></div>
+<div class="lvl open"><span class="badge on">Learn now</span><h3>Level 3: Strategy</h3><ul><li><button type="button" class="gl" data-g="breakout">Breakout and fakeout</button></li><li><button type="button" class="gl" data-g="pullback">Pullback</button></li><li><button type="button" class="gl" data-g="mtf">Multi-timeframe</button></li><li><button type="button" class="gl" data-g="fib">Fibonacci</button></li><li><button type="button" class="gl" data-g="backtest">Backtesting</button></li></ul><a class="btn sm" href="#lab">Open the Strategy lab</a></div>
+<div class="lvl open"><span class="badge on">Learn now</span><h3>Level 4: Professional</h3><ul><li><button type="button" class="gl" data-g="structure">Market structure</button></li><li><button type="button" class="gl" data-g="possize">Position sizing</button></li><li><button type="button" class="gl" data-g="leverage">Leverage and margin</button></li><li><button type="button" class="gl" data-g="news">News and calendar</button></li></ul></div>
+</div>
+
+    <div class="panel quiz" style="margin-top:22px;max-width:760px" id="quiz">
+      <h3 style="margin-bottom:12px">5-question check</h3>
+      <div id="quiz-body"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="wrap">
+    <h2>Trading calculators</h2>
+    <p class="sub">Count the risk before you trade. Everything is calculated on your own phone; no data leaves it.</p>
+    <div class="chips" id="tool-tabs" role="tablist">
+      <button class="chip" role="tab" aria-pressed="true" data-t="t1">Position size</button>
+      <button class="chip" role="tab" aria-pressed="false" data-t="t2">Risk and reward</button>
+      <button class="chip" role="tab" aria-pressed="false" data-t="t3">Pip and profit/loss</button>
+      <button class="chip" role="tab" aria-pressed="false" data-t="t4">Compounding</button>
+    </div>
+    <div class="panel" style="max-width:760px">
+
+      <div class="tabpane" id="t1">
+        <div class="form">
+          <label class="field">Total capital<input id="a-cap" type="number" inputmode="decimal" value="100000"></label>
+          <label class="field">Risk per trade (%)<input id="a-rp" type="number" inputmode="decimal" value="1" step="0.1"></label>
+          <label class="field">Entry price<input id="a-en" type="number" inputmode="decimal" value="100"></label>
+          <label class="field">Stop Loss price<input id="a-sl" type="number" inputmode="decimal" value="95"></label>
+        </div>
+        <button class="btn gold" data-calc="c1">Calculate</button>
+        <div class="err" id="e1" hidden></div>
+        <div class="out" id="o1" hidden></div>
+      </div>
+
+      <div class="tabpane" id="t2" hidden>
+        <div class="form">
+          <label class="field">Entry price<input id="b-en" type="number" inputmode="decimal" value="100"></label>
+          <label class="field">Stop Loss price<input id="b-sl" type="number" inputmode="decimal" value="95"></label>
+          <label class="field">Target price<input id="b-tg" type="number" inputmode="decimal" value="115"></label>
+          <label class="field">Quantity (units)<input id="b-q" type="number" inputmode="decimal" value="200"></label>
+        </div>
+        <button class="btn gold" data-calc="c2">Calculate</button>
+        <div class="err" id="e2" hidden></div>
+        <div class="out" id="o2" hidden></div>
+      </div>
+
+      <div class="tabpane" id="t3" hidden>
+        <div class="form">
+          <label class="field">Lot size<input id="p-lot" type="number" inputmode="decimal" value="0.1" step="0.01"></label>
+          <label class="field">Pips (use a minus for a loss)<input id="p-pip" type="number" inputmode="decimal" value="30"></label>
+          <label class="field">Value of 1 pip per standard lot ($)<input id="p-val" type="number" inputmode="decimal" value="10"></label>
+        </div>
+        <button class="btn gold" data-calc="c3">Calculate</button>
+        <div class="err" id="e3" hidden></div>
+        <div class="out" id="o3" hidden></div>
+        <p class="note" style="margin-top:10px">On pairs like EUR/USD, 1 pip on 1 standard lot is about $10. For other pairs, use your broker's pip value.</p>
+      </div>
+
+      <div class="tabpane" id="t4" hidden>
+        <div class="form">
+          <label class="field">Starting capital<input id="d-st" type="number" inputmode="decimal" value="10000"></label>
+          <label class="field">Monthly addition<input id="d-ad" type="number" inputmode="decimal" value="0"></label>
+          <label class="field">Monthly return (%)<input id="d-r" type="number" inputmode="decimal" value="3" step="0.1"></label>
+          <label class="field">Number of months<input id="d-m" type="number" inputmode="numeric" value="12"></label>
+        </div>
+        <button class="btn gold" data-calc="c4">Calculate</button>
+        <div class="err" id="e4" hidden></div>
+        <div class="out" id="o4" hidden></div>
+        <p class="note" style="margin-top:10px">This is only maths. Real trading does not give the same return every month, and losing months do come.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LAB -->
+<section id="lab">
+  <div class="wrap">
+    <h2>Strategy lab</h2>
+    <p class="sub">Run your strategy on real past prices and see how it would have done. Data comes live from Binance; the maths runs in your browser.</p>
+    <div class="panel">
+      <div class="form" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+        <label class="field">Market<select id="bt-sym"><option value="BTCUSDT">Bitcoin</option><option value="ETHUSDT">Ethereum</option><option value="BNBUSDT">BNB</option><option value="SOLUSDT">Solana</option></select></label>
+        <label class="field">Timeframe<select id="bt-tf"><option value="15m">15 minutes</option><option value="1h">1 hour</option><option value="4h" selected>4 hours</option><option value="1d">1 day</option></select></label>
+        <label class="field">Strategy<select id="bt-st"><option value="ema">EMA crossover</option><option value="rsi">RSI reversal</option><option value="brk">Breakout</option></select></label>
+        <label class="field"><span id="bt-la">Fast EMA</span><input id="bt-a" type="number" inputmode="numeric" value="20"></label>
+        <label class="field"><span id="bt-lb">Slow EMA</span><input id="bt-b" type="number" inputmode="numeric" value="50"></label>
+        <label class="field">Fee per side (%)<input id="bt-fee" type="number" inputmode="decimal" value="0.1" step="0.01"></label>
+      </div>
+      <p class="note" id="bt-help" style="margin-bottom:12px"></p>
+      <button class="btn gold" id="bt-run">Run backtest</button>
+      <div class="err" id="bt-err" hidden></div>
+    </div>
+    <div class="panel lab-out" id="bt-out" hidden style="margin-top:14px">
+      <div class="kpis" id="bt-kpis"></div>
+      <canvas id="bt-cv"></canvas>
+      <div class="legend"><span><i style="background:var(--gold)"></i>Strategy</span><span><i style="background:#64748b"></i>Just buy and hold</span></div>
+      <h3 style="margin:18px 0 8px;font-size:18px">Latest trades</h3>
+      <div style="overflow-x:auto"><table id="bt-tbl"></table></div>
+      <p class="note" style="margin-top:12px" id="bt-foot"></p>
+    </div>
+  </div>
+</section>
+
+<!-- SOON -->
+<section id="soon" style="padding:26px 0">
+  <div class="wrap"><div class="panel"><b>Coming next:</b> <span style="color:var(--mu)">a real AI assistant that answers any question, automatic breakout and fakeout detection, and news on big-player activity. We will announce each on the Telegram channel when it is ready.</span></div></div>
+</section>
+
+<!-- TELEGRAM -->
+<section id="telegram">
+  <div class="wrap">
+    <div class="tg">
+      <div>
+        <h2>Know when the market moves</h2>
+        <p>On the Telegram channel, big moves in Bitcoin, Ethereum, Gold, EUR/USD and Nasdaq arrive automatically with a chart and a Hindi explanation. Every market has its own hashtag, such as #Bitcoin, so you can follow only what you want.</p>
+        <div class="cta" style="margin-top:16px"><a class="btn gold" href="https://t.me/kartiktradinghindi" target="_blank" rel="noopener">Join the channel</a></div>
+      </div>
+      <div class="sample" aria-label="Sample alert">
+        <b>Sample alert (the real ones are in Hindi)</b>
+        🟠 BITCOIN ALERT: Falling 📉<br>
+        −1.8% in 1 hour · −3.2% in 24 hours<br>
+        Overall signal: leaning bearish<br>
+        Full analysis of support, resistance, RSI and MACD follows in plain language.
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<div class="sticky"><span>Daily market alerts, free</span><a class="btn gold sm" href="https://t.me/kartiktradinghindi" target="_blank" rel="noopener">Join Telegram</a></div>
+
+<footer>
+  <div class="wrap">
+    <div class="links"><a href="https://kartiktradinghindi.blogspot.com/p/learn.html" target="_blank" rel="noopener">Hindi articles</a><a href="https://kartiktradinghindi.blogspot.com/" target="_blank" rel="noopener">Blog</a><a href="https://t.me/kartiktradinghindi" target="_blank" rel="noopener">Telegram</a><button type="button" data-dlg="about">About</button><button type="button" data-dlg="privacy">Privacy</button></div>
+    <p><b>Disclaimer:</b> This website is for education and information only. Nothing here is advice to buy, sell or invest. We are not a SEBI-registered investment adviser. You can lose your entire capital in crypto and forex. A backtest runs on past prices and does not guarantee future results. Decide at your own responsibility.</p>
+    <p>Charts and indicators come from free TradingView widgets, live prices from Binance and Fear &amp; Greed from alternative.me. We are not affiliated with any of them.</p>
+    <p>© Kartik Trading Hindi</p>
+  </div>
+</footer>
+
+<dialog id="dlg" aria-labelledby="dlg-t"><h3 id="dlg-t"></h3><div id="dlg-b"></div><form method="dialog" style="margin-top:12px"><button class="btn gold sm">OK</button></form></dialog>
+<script>
+(function(){var p=['app1.js','app2.js','app3.js'];Promise.all(p.map(function(u){return fetch(u+'?v=11').then(function(r){if(!r.ok)throw 0;return r.text()})})).then(function(t){var s=document.createElement('script');s.textContent=t.join('\n');document.body.appendChild(s)})})();
+</script>
+</body>
+</html>
