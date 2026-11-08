@@ -19,7 +19,7 @@
  "ETHEREUM": {
   "photo": 24,
   "text": 25,
-  "dash": 26,
+  "dash": null,
   "cd": {},
   "tf": {
    "5m": "up",
