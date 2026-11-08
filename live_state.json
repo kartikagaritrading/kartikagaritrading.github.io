@@ -5,8 +5,8 @@
   "dash": 23,
   "cd": {},
   "tf": {
-   "5m": "down",
-   "15m": "down",
+   "5m": "side",
+   "15m": "side",
    "1h": "down",
    "4h": "down",
    "1d": "down",
@@ -20,8 +20,8 @@
   "dash": 26,
   "cd": {},
   "tf": {
-   "5m": "down",
-   "15m": "down",
+   "5m": "side",
+   "15m": "side",
    "1h": "down",
    "4h": "down",
    "1d": "down",
