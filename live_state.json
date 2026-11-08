@@ -22,8 +22,8 @@
   "dash": 26,
   "cd": {},
   "tf": {
-   "5m": "up",
-   "15m": "side",
+   "5m": "side",
+   "15m": "down",
    "1h": "down",
    "4h": "down",
    "1d": "down",
