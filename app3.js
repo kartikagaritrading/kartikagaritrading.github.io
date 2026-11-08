@@ -64,6 +64,12 @@ $$('.tabpane input').forEach(function(i){i.addEventListener('keydown',function(e
    ]]
   ];
   var IDX={},ORDER=[];G.forEach(function(g){g[1].forEach(function(t){IDX[t[0]]={id:t[0],title:t[1],kw:t[2],body:t[3],next:t[4]};ORDER.push(t[0])})});
+  function LT(id){
+    var t=IDX[id],h=window.HI_LESSONS&&window.HI_LESSONS[id],l=window.KLANG?window.KLANG.get():'en';
+    if(!h||l==='en')return {title:t.title,body:t.body};
+    if(l==='hi')return {title:h.t,body:h.b};
+    return {title:t.title+' · '+h.t,body:t.body+'<div class="hi2 blk">'+h.b+'</div>'};
+  }
   var msgs=$('#msgs'),box=$('#topics');
   function esc(x){return x.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
   function add(cls,html){var d=document.createElement('div');d.className='m '+cls;d.innerHTML=html;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d}
@@ -76,10 +82,10 @@ $$('.tabpane input').forEach(function(i){i.addEventListener('keydown',function(e
     var t=IDX[id]; if(!t)return;
     var n=ORDER.indexOf(id),seq=ORDER[n+1];
     var nx=(t.next||[]).slice(); if(seq&&nx.indexOf(seq)<0)nx.unshift(seq);
-    var d=add('b','<h4>'+t.title+'</h4>'+t.body+(nx.length?'<p class="note" style="margin-top:6px">Learn next:</p>'+nextBtns(nx.slice(0,3)):''));
+    var lt=LT(id),d=add('b','<h4>'+lt.title+'</h4>'+lt.body+(nx.length?'<p class="note" style="margin-top:6px">Learn next:</p>'+nextBtns(nx.slice(0,3)):''));
     wire(d);
   }
-  function wire(d){d.querySelectorAll('[data-t]').forEach(function(b){b.addEventListener('click',function(){add('u',esc(IDX[b.dataset.t].title));teach(b.dataset.t)})})}
+  function wire(d){d.querySelectorAll('[data-t]').forEach(function(b){b.addEventListener('click',function(){add('u',esc(LT(b.dataset.t).title));teach(b.dataset.t)})})}
   G.forEach(function(g){
     var h=document.createElement('h4');h.textContent=g[0];box.appendChild(h);
     g[1].forEach(function(t){var b=document.createElement('button');b.type='button';b.textContent=t[1];b.addEventListener('click',function(){add('u',esc(t[1]));teach(t[0]);document.getElementById('tutor').scrollIntoView&&0});box.appendChild(b)});
@@ -117,9 +123,11 @@ $$('.tabpane input').forEach(function(i){i.addEventListener('keydown',function(e
     }
     var id=find(q);id?teach(id):miss();
   });
-  window.askGuru=function(id){if(!IDX[id])return;add('u',esc(IDX[id].title));teach(id)};
-  var hello=add('b','<h4>Hello, I am your trading Guru</h4><p>I explain in simple Hindi with examples. Pick a topic below, or type a question in Hindi or English.</p>'+nextBtns(['bull','candle','risk','sr','rsi','mtf']));
-  wire(hello);
+  window.askGuru=function(id){if(!IDX[id])return;add('u',esc(LT(id).title));teach(id)};
+  function sayHello(){var hello=add('b','<h4>Hello, I am your trading Guru</h4><p>I explain in simple Hindi with examples. Pick a topic below, or type a question in Hindi or English.</p>'+nextBtns(['bull','candle','risk','sr','rsi','mtf']));
+  wire(hello);}
+  sayHello();
+  window.__onLang=function(){msgs.innerHTML='';sayHello()};
 })();
 
 /* ---------- strategy lab ---------- */
