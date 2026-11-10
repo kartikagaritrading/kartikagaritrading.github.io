@@ -101,7 +101,7 @@ def structure(d4):
 def rsi_move(a):
     r = a["rsi"]
     now, prev = float(r.iloc[-1]), float(r.iloc[-4])
-    arrow = "↗ चढ़ रहा" if now - prev > 1.5 else "↘ गिर रहा" if now - prev < -1.5 else "→ स्थिर"
+    arrow = "⬆️ चढ़ रहा" if now - prev > 1.5 else "⬇️ गिर रहा" if now - prev < -1.5 else "➖ स्थिर"
     zone = "ओवरबॉट" if now > 70 else "ओवरसोल्ड" if now < 30 else "सामान्य"
     return now, arrow, zone
 
@@ -222,7 +222,7 @@ def main():
             cd = m.setdefault("cd", {})
             fresh = [(k, t, mt) for k, t, mt in ev if now_ts - cd.get(k, 0) > COOLDOWN_MIN * 60]
             if fresh and m.get("tf"):       # pehli baar sirf snapshot lo
-                body = "\n\n".join("• " + t + "\n   ↳ " + mt for _, t, mt in fresh)
+                body = "\n\n".join("• " + t + "\n   ℹ️ " + mt for _, t, mt in fresh)
                 tg_send_text(f"🔔 {emoji} {name} — नया बदलाव\n\n💰 {f(a['now'])}\n{body}\n\n"
                              "👆 ऊपर वाला LIVE चार्ट और विश्लेषण अभी अपडेट हो चुका है।\n⚠️ सिर्फ़ पढ़ाई के लिए।\n" + tag)
                 for k, _, _m in fresh:
