@@ -6,9 +6,10 @@ import requests
 import alerts_v3 as A
 import news_alert as N
 import pro as P
+import morning as M
 
 STATE = "live_state.json"
-COOLDOWN_MIN = 60          # ek hi tarah ka alert is se jaldi dobara nahi
+COOLDOWN_MIN = 180         # ek hi tarah ka alert is se jaldi dobara nahi
 API = lambda m: f"https://api.telegram.org/bot{A.TOKEN}/{m}"
 
 
@@ -143,23 +144,22 @@ def long_text(name, a, tfs, st, stword, prefix, dec):
 
 
 def alert_events(name, a, tfs, st, prev):
-    """(chabi, sandesh) ki suchi: sirf badlaav par."""
+    """(chabi, sandesh, matlab) ki suchi: sirf bade badlaav par. Chhote (1h, MACD, RSI-baahar) hata diye."""
     ev = []
     tf4 = {n: s for n, s, _ in tfs}
-    for k in ("1h", "4h", "1d"):
+    for k in ("4h", "1d"):
         if k in tf4 and prev.get("tf", {}).get(k) and prev["tf"][k] != tf4[k]:
-            ev.append((f"tf_{k}", f"{k} का ट्रेंड बदला: {TF_WORD[prev['tf'][k]]} → {TF_WORD[tf4[k]]}"))
+            ev.append((f"tf_{k}", f"{k} का ट्रेंड {TF_WORD[prev['tf'][k]]} से {TF_WORD[tf4[k]]} में बदला",
+                       "बड़े टाइमफ्रेम का बदलाव छोटे चार्ट से ज़्यादा मायने रखता है, पर यह पक्का संकेत नहीं।"))
     rv = float(a["rsi"].iloc[-1])
     z = "ob" if rv > 70 else "os" if rv < 30 else "n"
     if prev.get("rz") and prev["rz"] != z:
         if z == "ob":
-            ev.append(("rsi", f"RSI {rv:.0f}: ओवरबॉट ज़ोन में पहुँचा, नरमी आ सकती है"))
+            ev.append(("rsi", f"RSI {rv:.0f}: ओवरबॉट ज़ोन में पहुँचा",
+                       "भाव काफ़ी चढ़ चुका है। इसका मतलब यह नहीं कि अब गिरेगा; तेज़ ट्रेंड में RSI लंबे समय तक ऊपर रह सकता है।"))
         elif z == "os":
-            ev.append(("rsi", f"RSI {rv:.0f}: ओवरसोल्ड ज़ोन में पहुँचा, उछाल आ सकता है"))
-        else:
-            ev.append(("rsi", f"RSI {rv:.0f}: ओवरबॉट/ओवरसोल्ड ज़ोन से बाहर आया"))
-    if a["cross"]:
-        ev.append(("macd", "MACD ने " + ("ऊपर" if a["cross"] == "up" else "नीचे") + " की कटान बनाई"))
+            ev.append(("rsi", f"RSI {rv:.0f}: ओवरसोल्ड ज़ोन में पहुँचा",
+                       "भाव काफ़ी गिर चुका है। इसका मतलब यह नहीं कि अब चढ़ेगा; तेज़ गिरावट में यह जारी भी रह सकती है।"))
     return ev, {"tf": tf4, "rz": z}
 
 
@@ -184,6 +184,7 @@ def main():
     s = load()
     now_ts = time.time()
     force = os.environ.get("FORCE_NEW") == "1"
+    rows = []
     for name, emoji, symbol, tag, limit, prefix, dec in A.MARKETS:
         try:
             d1 = A.get_hourly(symbol)
@@ -194,6 +195,7 @@ def main():
             f = lambda v: f"{prefix}{v:,.{dec}f}"
             tfs, dday, dweek = timeframes(symbol, d1, d4)
             st, stword = structure(d4)
+            rows.append((emoji, name, f(a['now']), a['chg24'], st))
             path = f"live_{symbol.replace('^', '').replace('=', '')}.png"
             A.make_chart(d4, a, name, dec, path)
             cap = caption(name, emoji, tag, a, tfs, st, stword, f)
@@ -215,19 +217,30 @@ def main():
             ev, snap = alert_events(name, a, tfs, st, m)
             big = abs(a["chg1"]) >= limit
             if big:
-                ev.append(("move", f"1 घंटे में {a['chg1']:+.2f}% की बड़ी चाल"))
+                ev.append(("move", f"1 घंटे में {a['chg1']:+.2f}% की बड़ी चाल",
+                           "इतनी तेज़ चाल अक्सर खबर या बड़े खरीदार-विक्रेता से आती है। चाल के पीछे भागने से पहले रुककर देखो।"))
             cd = m.setdefault("cd", {})
-            fresh = [(k, t) for k, t in ev if now_ts - cd.get(k, 0) > COOLDOWN_MIN * 60]
+            fresh = [(k, t, mt) for k, t, mt in ev if now_ts - cd.get(k, 0) > COOLDOWN_MIN * 60]
             if fresh and m.get("tf"):       # pehli baar sirf snapshot lo
-                body = "\n".join("• " + t for _, t in fresh)
+                body = "\n\n".join("• " + t + "\n   ↳ " + mt for _, t, mt in fresh)
                 tg_send_text(f"🔔 {emoji} {name} — नया बदलाव\n\n💰 {f(a['now'])}\n{body}\n\n"
                              "👆 ऊपर वाला LIVE चार्ट और विश्लेषण अभी अपडेट हो चुका है।\n⚠️ सिर्फ़ पढ़ाई के लिए।\n" + tag)
-                for k, _ in fresh:
+                for k, _, _m in fresh:
                     cd[k] = now_ts
             m.update(snap)
             print(name, "ok", f(a["now"]), stword)
         except Exception as e:
             print(name, "error:", type(e).__name__, e)
+    try:      # subah ka saaransh (~8 baje IST, roz ek baar). FORCE_NEW=m likhne par turant (jaanch)
+        n = M.ist_now()
+        today = n.strftime("%Y-%m-%d")
+        test = os.environ.get("FORCE_NEW") == "m"
+        if test or (s.get("_morning") != today and (8, 0) <= (n.hour, n.minute) < (8, 45)):
+            use = [r for r in rows if n.weekday() < 5 or r[1] in ("BITCOIN", "ETHEREUM")]
+            if use and tg_send_text(M.build(use, EVENTS, FG, n)) and not test:
+                s["_morning"] = today
+    except Exception as e:
+        print("subah saaransh error:", type(e).__name__, e)
     save(s)
 
 
