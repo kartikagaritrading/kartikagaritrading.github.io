@@ -6,6 +6,7 @@ var KEYS=Object.keys(D).filter(function(k){return k.length>12||/: $/.test(k)||/^
 var RULES=[
  [/^Question (\d+)\s*(?:of|\/)\s*(\d+)$/,'सवाल $1 / $2'],
  [/^Your score: (.*)$/,'तुम्हारा स्कोर: $1'],
+ [/^(\d+) \/ (\d+) done$/,'$1 / $2 पूरे'],
  [/^Lowest in the last 80 hours/,'पिछले 80 घंटों का सबसे निचला'],
  [/\(support zone\), highest/,'(सपोर्ट ज़ोन), सबसे ऊँचा'],
  [/\(resistance zone\)\./,'(रेज़िस्टेंस ज़ोन)।']
