@@ -66,9 +66,10 @@ $$('.tabpane input').forEach(function(i){i.addEventListener('keydown',function(e
   var IDX={},ORDER=[];G.forEach(function(g){g[1].forEach(function(t){IDX[t[0]]={id:t[0],title:t[1],kw:t[2],body:t[3],next:t[4]};ORDER.push(t[0])})});
   function LT(id){
     var t=IDX[id],h=window.HI_LESSONS&&window.HI_LESSONS[id],l=window.KLANG?window.KLANG.get():'en';
-    if(!h||l==='en')return {title:t.title,body:t.body};
-    if(l==='hi')return {title:h.t,body:h.b};
-    return {title:t.title+' · '+h.t,body:t.body+'<div class="hi2 blk">'+h.b+'</div>'};
+    var vz=(window.KVIZ&&window.KVIZ(id,l))||'';
+    if(!h||l==='en')return {title:t.title,body:t.body+vz};
+    if(l==='hi')return {title:h.t,body:h.b+vz};
+    return {title:t.title+' · '+h.t,body:t.body+'<div class="hi2 blk">'+h.b+'</div>'+vz};
   }
   var msgs=$('#msgs'),box=$('#topics');
   function esc(x){return x.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
