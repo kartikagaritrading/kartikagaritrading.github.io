@@ -36,7 +36,7 @@ function candles(d,from,X,Y,bw){var s='';for(var i=from;i<d.length;i++){var x=d[
 function draw(d,I,e,marks){
   var st=e.start===undefined?START:e.start,W=360,PX=8,PW=W-PX*2-22,H1=e.panel?150:200,y0=8,y1=y0+H1,y2=y1+16,H2=76,n=d.length-st,vis=d.slice(st),ov=e.over?e.over(d,I):[];
   var hi=-1e9,lo=1e9;vis.forEach(function(x){if(x.h>hi)hi=x.h;if(x.l<lo)lo=x.l});
-  ov.forEach(function(o){var vs=o.t==='h'?[o.v]:o.t==='zone'?[o.v1,o.v2]:o.t==='box'?[o.v1,o.v2]:o.t==='line'?o.pts.map(function(p){return p[1]}):[];vs.forEach(function(v){if(v>hi)hi=v;if(v<lo)lo=v})});
+  ov.forEach(function(o){var vs=o.t==='h'?[o.v]:o.t==='zone'?[o.v1,o.v2]:o.t==='box'?[o.v1,o.v2]:o.t==='line'?o.pts.map(function(p){return p[1]}):o.t==='ma'?o.arr.slice(st):[];vs.forEach(function(v){if(v>hi)hi=v;if(v<lo)lo=v})});
   var pad=(hi-lo)*.08;hi+=pad;lo-=pad;
   var X=function(i){return PX+(i-st+.5)*PW/n},Y=function(v){return y0+(hi-v)/(hi-lo)*H1},bw=Math.max(2,PW/n*.62),yb=e.panel?y2+H2:y1;
   var s=head(yb+6)+'<rect x="'+PX+'" y="'+y0+'" width="'+PW+'" height="'+H1+'" fill="none" stroke="#1f2b45"/>';
