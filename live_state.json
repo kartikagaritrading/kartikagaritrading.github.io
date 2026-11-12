@@ -91,7 +91,7 @@
   },
   "tf": {
    "5m": "down",
-   "15m": "up",
+   "15m": "side",
    "1h": "side",
    "4h": "down",
    "1d": "down",
