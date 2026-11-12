@@ -92,7 +92,7 @@
   "tf": {
    "5m": "down",
    "15m": "side",
-   "1h": "side",
+   "1h": "down",
    "4h": "down",
    "1d": "down",
    "1w": "up"
