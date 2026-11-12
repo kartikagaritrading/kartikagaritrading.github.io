@@ -63,6 +63,7 @@ $$('.tabpane input').forEach(function(i){i.addEventListener('keydown',function(e
     ['news','News & calendar',['news','ख़बर','खबर','fed','एफ़ईडी','cpi','महँगाई','nfp','rate','ब्याज','calendar','कैलेंडर'],'<p>On numbers like the Fed interest rate, inflation (CPI) and jobs (NFP), the market can move sharply within seconds.</p><ul><li>At such times the spread widens and your Stop Loss may feel further away than expected.</li><li>Beginners should avoid new trades around big news.</li><li>Check in advance the time of the news marked with three highlights in the calendar.</li></ul>',['psy','risk']]
    ]]
   ];
+  if(window.KX_LESSONS)G.push(['More lessons',window.KX_LESSONS]);
   var IDX={},ORDER=[];G.forEach(function(g){g[1].forEach(function(t){IDX[t[0]]={id:t[0],title:t[1],kw:t[2],body:t[3],next:t[4]};ORDER.push(t[0])})});
   function LT(id){
     var t=IDX[id],h=window.HI_LESSONS&&window.HI_LESSONS[id],l=window.KLANG?window.KLANG.get():'en';
