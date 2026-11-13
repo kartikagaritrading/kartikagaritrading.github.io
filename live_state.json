@@ -60,9 +60,9 @@
   "rz": "n"
  },
  "EUR/USD": {
-  "photo": 30,
-  "text": 31,
-  "dash": 32,
+  "photo": null,
+  "text": null,
+  "dash": null,
   "cd": {
    "tf_4h": 1794336353.0173295,
    "tf_1h": 1794250889.721603,
@@ -80,9 +80,9 @@
   "rz": "n"
  },
  "NASDAQ": {
-  "photo": 33,
-  "text": 34,
-  "dash": 35,
+  "photo": null,
+  "text": null,
+  "dash": null,
   "cd": {
    "rsi": 1793982064.5933187,
    "move": 1794582349.149333,
