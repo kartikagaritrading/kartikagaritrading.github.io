@@ -20,7 +20,7 @@ concurrency:
 jobs:
   news:
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -31,6 +31,8 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TEST_NEWS: ${{ github.event.inputs.test }}
+          LEAD_MIN: "10"
+          LOOK_MIN: "50"
         run: python news_alert.py
       - name: Bheji ho chuki khabrein yaad rakho
         run: |
