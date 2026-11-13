@@ -81,8 +81,8 @@
  },
  "NASDAQ": {
   "photo": 257,
-  "text": null,
-  "dash": null,
+  "text": 258,
+  "dash": 259,
   "cd": {
    "rsi": 1793982064.5933187,
    "move": 1794582349.149333,
@@ -92,7 +92,7 @@
   "tf": {
    "5m": "down",
    "15m": "down",
-   "1h": "side",
+   "1h": "down",
    "4h": "down",
    "1d": "down",
    "1w": "up"
