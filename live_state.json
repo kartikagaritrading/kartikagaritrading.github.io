@@ -36,7 +36,7 @@
    "1d": "down",
    "1w": "down"
   },
-  "rz": "n"
+  "rz": "os"
  },
  "GOLD": {
   "photo": 27,
@@ -70,14 +70,14 @@
    "rsi": 1794523851.2175634
   },
   "tf": {
-   "5m": "down",
+   "5m": "side",
    "15m": "down",
    "1h": "down",
    "4h": "down",
    "1d": "down",
    "1w": "down"
   },
-  "rz": "os"
+  "rz": "n"
  },
  "NASDAQ": {
   "photo": 33,
