@@ -29,7 +29,7 @@
    "move": 1794317470.7922034
   },
   "tf": {
-   "5m": "down",
+   "5m": "side",
    "15m": "down",
    "1h": "down",
    "4h": "down",
@@ -51,13 +51,13 @@
   },
   "tf": {
    "5m": "up",
-   "15m": "down",
+   "15m": "side",
    "1h": "down",
    "4h": "down",
    "1d": "down",
    "1w": "down"
   },
-  "rz": "os"
+  "rz": "n"
  },
  "EUR/USD": {
   "photo": 30,
