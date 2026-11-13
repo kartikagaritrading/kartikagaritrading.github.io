@@ -1,13 +1,13 @@
-"""Badi khabar se ~2 minute pehle Telegram par chetavni + chart + vishleshan.
-GitHub Actions har 30 minute chalta hai, agle ~45 minute ki badi khabrein dekhta hai,
-sahi samay tak ruka rehta hai aur T-2 minute par bhejta hai."""
+"""Badi khabar se ~10 minute pehle Telegram par chetavni + chart + vishleshan.
+GitHub Actions har 30 minute chalta hai, agle ~50 minute ki badi khabrein dekhta hai,
+sahi samay tak ruka rehta hai aur T-10 minute par bhejta hai."""
 import os, json, time, datetime as dt
 import requests
 import alerts_v3 as A
 
 FEED = "https://nfs.faireconomy.media/ff_calendar_thisweek.json"
-LEAD = int(os.environ.get("LEAD_MIN", "2"))        # khabar se kitne minute pehle
-LOOK = int(os.environ.get("LOOK_MIN", "45"))       # kitni der aage tak dekhna
+LEAD = int(os.environ.get("LEAD_MIN", "10"))        # khabar se kitne minute pehle
+LOOK = int(os.environ.get("LOOK_MIN", "50"))       # kitni der aage tak dekhna
 SENT_FILE = "sent_news.json"
 TEST = os.environ.get("TEST_NEWS", "")             # "1" = abhi ek namuna bhejo
 
@@ -259,7 +259,7 @@ def fire(ev):
 
 def main():
     if TEST:
-        ev = dict(id="test", t=dt.datetime.now(dt.timezone.utc) + dt.timedelta(minutes=2),
+        ev = dict(id="test", t=dt.datetime.now(dt.timezone.utc) + dt.timedelta(minutes=LEAD),
                   title="CPI y/y (नमूना)", cur="USD", fc="3.1%", pv="3.2%")
         fire(ev)
         return
