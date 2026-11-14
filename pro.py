@@ -123,7 +123,7 @@ def trade_plan(a, d1, bias, f, prefix, dec):
     r1 = a["ress"][0][0]
     s2 = a["sups"][1][0] if len(a["sups"]) > 1 else s1 - 2 * atr1
     r2 = a["ress"][1][0] if len(a["ress"]) > 1 else r1 + 2 * atr1
-    pad = 0.5 * atr1
+    pad = 1.0 * atr1  # stop kam se kam 1 ghante ki aausat chaal door (shor se bachne ko)
     out = []
 
     def block(title, entry, sl, t1, t2):
