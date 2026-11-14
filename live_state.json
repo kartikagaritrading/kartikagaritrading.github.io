@@ -29,14 +29,14 @@
    "move": 1794623468.7587807
   },
   "tf": {
-   "5m": "side",
+   "5m": "down",
    "15m": "down",
    "1h": "down",
    "4h": "down",
    "1d": "down",
    "1w": "down"
   },
-  "rz": "n"
+  "rz": "os"
  },
  "GOLD": {
   "photo": 216,
