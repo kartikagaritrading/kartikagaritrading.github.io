@@ -150,7 +150,7 @@ def build(rows, events, fg, now=None):
     head = f"🌅 सुबह का सारांश\n📆 {DAYS[wk]}, {now.day} {MONTHS[now.month - 1]}\n\n"
     lines = []
     for emoji, name, ptxt, chg, st in rows:
-        lines.append(f"{emoji} {name}  {ptxt}  ({chg:+.2f}%)  {ICON.get(st, '')}")
+        lines.append(f"{emoji} {name}  {ptxt}  (24घं {chg:+.2f}%)  | बड़ा ट्रेंड: {ICON.get(st, '')}")
     body = "📊 बाज़ार का हाल (24 घंटे)\n" + "\n".join(lines) + "\n"
     if wk >= 5:
         body += "ℹ️ शनिवार-रविवार को सोना, EUR/USD और Nasdaq बंद रहते हैं।\n"
