@@ -70,14 +70,14 @@
    "rsi": 1794815148.8328383
   },
   "tf": {
-   "5m": "up",
+   "5m": "side",
    "15m": "down",
    "1h": "down",
    "4h": "down",
    "1d": "down",
    "1w": "down"
   },
-  "rz": "n"
+  "rz": "os"
  },
  "NASDAQ": {
   "photo": 257,
