@@ -17,7 +17,7 @@
    "1d": "down",
    "1w": "down"
   },
-  "rz": "os"
+  "rz": "n"
  },
  "ETHEREUM": {
   "photo": 126,
@@ -70,7 +70,7 @@
    "rsi": 1794831944.7527454
   },
   "tf": {
-   "5m": "side",
+   "5m": "down",
    "15m": "down",
    "1h": "down",
    "4h": "down",
