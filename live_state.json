@@ -10,14 +10,14 @@
    "move": 1794706271.9429715
   },
   "tf": {
-   "5m": "side",
+   "5m": "down",
    "15m": "down",
    "1h": "down",
    "4h": "down",
    "1d": "down",
    "1w": "down"
   },
-  "rz": "n"
+  "rz": "os"
  },
  "ETHEREUM": {
   "photo": 126,
@@ -50,7 +50,7 @@
    "rsi": 1794487844.8627908
   },
   "tf": {
-   "5m": "side",
+   "5m": "down",
    "15m": "down",
    "1h": "down",
    "4h": "down",
