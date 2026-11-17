@@ -17,7 +17,7 @@
    "1d": "down",
    "1w": "down"
   },
-  "rz": "os"
+  "rz": "n"
  },
  "ETHEREUM": {
   "photo": 126,
@@ -51,8 +51,8 @@
   },
   "tf": {
    "5m": "up",
-   "15m": "up",
-   "1h": "side",
+   "15m": "side",
+   "1h": "down",
    "4h": "down",
    "1d": "down",
    "1w": "down"
@@ -97,7 +97,7 @@
    "1d": "down",
    "1w": "side"
   },
-  "rz": "os"
+  "rz": "n"
  },
  "_morning": "2026-11-17"
 }
