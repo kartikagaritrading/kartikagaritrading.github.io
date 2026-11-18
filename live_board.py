@@ -313,6 +313,12 @@ def main():
             big = abs(a["chg1"]) >= limit
             if big:
                 ev.append(("move", f"1 घंटे में {a['chg1']:+.2f}% की बड़ी चाल", LEARN_MOVE))
+            if os.environ.get("FORCE_NEW") == "a" and name == "EUR/USD":     # jaanch: namuna alert turant
+                tg_send_text((f"🧪 यह सिर्फ़ टेस्ट अलर्ट है (असली नहीं)\n\n🔔 {emoji} {name} — नया बदलाव\n\n💰 {f(a['now'])}\n"
+                              f"⚡ क्या हुआ: RSI {float(a['rsi'].iloc[-1]):.0f}: ओवरसोल्ड ज़ोन (30 से नीचे) में पहुँचा\n\n"
+                              f"{context_lines(a, tfs, st, f)}\n\n{LEARN_RSI_OS}\n\n"
+                              "🤖 और सवाल? वेबसाइट पर गुरु से पूछो: kartikagaritrading.github.io\n"
+                              "⚠️ सिर्फ़ पढ़ाई के लिए, ख़रीद-बिक्री की सलाह नहीं।\n" + tag)[:4000])
             cd = m.setdefault("cd", {})
             fresh = [(k, t, mt) for k, t, mt in ev if now_ts - cd.get(k, 0) > COOLDOWN_MIN * 60]
             if fresh and m.get("tf"):       # pehli baar sirf snapshot lo
