@@ -21,8 +21,8 @@
  },
  "ETHEREUM": {
   "photo": 126,
-  "text": 127,
-  "dash": 215,
+  "text": null,
+  "dash": null,
   "cd": {
    "macd": 1794191999.1258147,
    "rsi": 1794713466.4083717,
