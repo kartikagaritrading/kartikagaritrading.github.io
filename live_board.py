@@ -1,12 +1,16 @@
 """LIVE BOARD: har market ke liye 2 sthaayi Telegram sandesh (chart + vishleshan).
 Har 5 minute mein wahi sandesh EDIT hote hain, naya notification nahi aata.
 Bada badlaav (trend badla, RSI zone, badi chaal) par alag chhota 'alert' sandesh jaata hai."""
-import os, json, time, datetime as dt
+import os, json, time, html, random, datetime as dt
 import requests
 import alerts_v3 as A
 import news_alert as N
 import pro as P
 import morning as M
+try:
+    import quiz_bank as Q
+except Exception:
+    Q = None
 
 STATE = "live_state.json"
 COOLDOWN_MIN = 180         # ek hi tarah ka alert is se jaldi dobara nahi
@@ -32,9 +36,24 @@ def tg_send_photo(path, cap):
     return r.json().get("result", {}).get("message_id") if r.ok else None
 
 
-def tg_send_text(txt):
-    r = requests.post(API("sendMessage"), data={"chat_id": A.CHAT, "text": txt}, timeout=60)
+def tg_send_text(txt, rich=False):
+    d = {"chat_id": A.CHAT, "text": txt}
+    if rich:
+        d["parse_mode"] = "HTML"
+        d["disable_web_page_preview"] = "true"
+    r = requests.post(API("sendMessage"), data=d, timeout=60)
+    if not r.ok:
+        print("sendMessage fail:", r.text[:200])
     return r.json().get("result", {}).get("message_id") if r.ok else None
+
+
+def tg_send_quiz(q, opts, correct, expl):
+    d = {"chat_id": A.CHAT, "question": q[:300], "options": json.dumps(opts, ensure_ascii=False),
+         "type": "quiz", "correct_option_id": correct, "explanation": expl[:200], "is_anonymous": "true"}
+    r = requests.post(API("sendPoll"), data=d, timeout=60)
+    if not r.ok:
+        print("sendPoll fail:", r.text[:200])
+    return r.ok
 
 
 def tg_edit_photo(mid, path, cap):
@@ -147,31 +166,35 @@ def pct(x, y):
     return abs(x - y) / y * 100 if y else 0
 
 
+def esc(x):
+    return html.escape(str(x), quote=False)
+
+
+def agree_line(tfs):
+    ups = sum(1 for _, s_, _ in tfs if s_ == "up")
+    dns = sum(1 for _, s_, _ in tfs if s_ == "down")
+    if dns >= 4:
+        return f"{len(tfs)} में से {dns} टाइमफ़्रेम नीचे की तरफ़ हैं: ज़्यादातर चार्ट एक ही बात कह रहे हैं (मंदी)।"
+    if ups >= 4:
+        return f"{len(tfs)} में से {ups} टाइमफ़्रेम ऊपर की तरफ़ हैं: ज़्यादातर चार्ट एक ही बात कह रहे हैं (तेज़ी)।"
+    return "टाइमफ़्रेम आपस में सहमत नहीं हैं (कोई ऊपर, कोई नीचे): तस्वीर मिली-जुली है, इसलिए जल्दबाज़ी ठीक नहीं।"
+
+
 def context_lines(a, tfs, st, f):
     """Chart par abhi kya hai: asli sankhyaon ke saath."""
     now = a["now"]
     s1, r1 = a["sups"][0][0], a["ress"][0][0]
-    e20, e50 = float(a["e20"].iloc[-1]), float(a["e50"].iloc[-1])
-    tfl = " ".join(f"{n} {TF_ICON[s]}" for n, s, _ in tfs)
-    ups = sum(1 for _, s_, _ in tfs if s_ == "up")
-    dns = sum(1 for _, s_, _ in tfs if s_ == "down")
-    if dns >= 4:
-        agree = f"{len(tfs)} में से {dns} टाइमफ़्रेम नीचे की तरफ़ हैं: ज़्यादातर चार्ट एक ही बात कह रहे हैं (मंदी)।"
-    elif ups >= 4:
-        agree = f"{len(tfs)} में से {ups} टाइमफ़्रेम ऊपर की तरफ़ हैं: ज़्यादातर चार्ट एक ही बात कह रहे हैं (तेज़ी)।"
-    else:
-        agree = "टाइमफ़्रेम आपस में सहमत नहीं हैं (कोई ऊपर, कोई नीचे): तस्वीर मिली-जुली है, इसलिए जल्दबाज़ी ठीक नहीं।"
+    e50 = float(a["e50"].iloc[-1])
+    tfl = " ".join(f"{n} {TF_ICON[s_]}" for n, s_, _ in tfs)
     pos = "EMA50 के ऊपर" if now > e50 else "EMA50 के नीचे"
-    vol = ""
-    if a.get("vol_x"):
-        vol = f"\n• वॉल्यूम: सामान्य का {a['vol_x']:.1f} गुना"
+    vol = f"\n• वॉल्यूम: सामान्य का {a['vol_x']:.1f} गुना" if a.get("vol_x") else ""
     return (
         "📍 इस वक़्त चार्ट पर (असली आँकड़े):\n"
         f"• भाव {f(now)}, {pos} (EMA50 = {f(e50)})\n"
         f"• सबसे पास का सहारा (सपोर्ट) {f(s1)}, यानी भाव से {pct(now, s1):.2f}% नीचे\n"
         f"• सबसे पास की रुकावट (रेज़िस्टेंस) {f(r1)}, यानी भाव से {pct(now, r1):.2f}% ऊपर\n"
         f"• टाइमफ़्रेम: {tfl}\n"
-        f"• {agree}{vol}"
+        f"• {agree_line(tfs)}{vol}"
     )
 
 
@@ -241,20 +264,112 @@ LEARN_TF = (
 )
 
 
+
+LEARN = {}
+for _k, _t in (("rsi_os", LEARN_RSI_OS), ("rsi_ob", LEARN_RSI_OB), ("move", LEARN_MOVE), ("tf", LEARN_TF)):
+    _i, _b = _t.split("\n\n🧠", 1)
+    LEARN[_k] = {"intro": _i, "body": "🧠" + _b}
+ONE = {
+    "rsi_os": "ओवरसोल्ड का मतलब \"सस्ता\" नहीं, सिर्फ़ इतना कि गिरावट तेज़ रही।",
+    "rsi_ob": "ओवरबॉट का मतलब \"महँगा, अब गिरेगा\" नहीं, सिर्फ़ इतना कि चढ़ाई तेज़ रही।",
+    "move": "तेज़ चाल के पीछे भागना सबसे महँगी आदत है। पहले कैंडल बंद होने का इंतज़ार करो।",
+    "tf": "एक टाइमफ़्रेम का बदलाव पक्का उलटफेर नहीं। बाकी टाइमफ़्रेम से मिलाकर देखो।",
+}
+
+
+def build_alert(emoji, name, tag, a, tfs, st, f, title, kind, first, test=False):
+    """Chhota sandesh ऊपर, poori seekh 'और पढ़ो' (expandable) mein. HTML."""
+    now = a["now"]
+    s1, r1 = a["sups"][0][0], a["ress"][0][0]
+    L = LEARN[kind]
+    detail = context_lines(a, tfs, st, f) + "\n\n" + ((L["intro"] + "\n\n") if first else "") + L["body"]
+    top = ("🧪 <b>यह सिर्फ़ टेस्ट है (असली अलर्ट नहीं)</b>\n\n" if test else "")
+    msg = (
+        f"{top}🔔 <b>{esc(emoji)} {esc(name)} — नया बदलाव</b>\n\n"
+        f"💰 {esc(f(now))}\n⚡ {esc(title)}\n\n"
+        f"📍 सहारा {esc(f(s1))} ({pct(now, s1):.2f}% नीचे) · रुकावट {esc(f(r1))} ({pct(now, r1):.2f}% ऊपर)\n"
+        f"📊 {esc(agree_line(tfs))}\n\n"
+        f"🧠 {esc(ONE[kind])}\n\n"
+        f"👇 पूरी सीख खोलने के लिए नीचे \"और पढ़ो\" दबाओ\n"
+        f"<blockquote expandable>{esc(detail)}</blockquote>\n"
+        f"🤖 और सवाल? वेबसाइट पर गुरु से पूछो: kartikagaritrading.github.io\n"
+        f"⚠️ सिर्फ़ पढ़ाई के लिए, ख़रीद-बिक्री की सलाह नहीं।\n{esc(tag)}"
+    )
+    return msg[:4090]
+
+
+def build_followup(rec, a, f, test=False):
+    now = a["now"]
+    chg = (now - rec["price"]) / rec["price"] * 100 if rec["price"] else 0
+    rv = float(a["rsi"].iloc[-1])
+    kind = rec["kind"]
+    if kind == "rsi_os":
+        what = f"RSI {rec['rsi']:.0f} (ओवरसोल्ड)"
+        if chg < -0.05:
+            les = "ओवरसोल्ड के बाद भी भाव गिरता रहा। यही वजह है कि सिर्फ़ RSI पर भरोसा करना ख़तरनाक है।"
+        elif chg > 0.05:
+            les = "इस बार भाव ऊपर लौटा। पर एक उदाहरण से नियम नहीं बनता, कई बार ऐसा नहीं होता।"
+        else:
+            les = "भाव लगभग वहीं रहा। कई बार संकेत से कोई साफ़ दिशा नहीं मिलती, यह भी आम है।"
+    elif kind == "rsi_ob":
+        what = f"RSI {rec['rsi']:.0f} (ओवरबॉट)"
+        if chg > 0.05:
+            les = "ओवरबॉट के बाद भी भाव चढ़ता रहा। मज़बूत ट्रेंड में RSI देर तक ऊपर रह सकता है।"
+        elif chg < -0.05:
+            les = "इस बार भाव नीचे लौटा। पर एक उदाहरण से नियम नहीं बनता, कई बार ऐसा नहीं होता।"
+        else:
+            les = "भाव लगभग वहीं रहा। कई बार संकेत से कोई साफ़ दिशा नहीं मिलती, यह भी आम है।"
+    elif kind == "move":
+        what = "बड़ी चाल"
+        les = ("चाल आगे भी बढ़ी। पर चाल के बाद भागने वाले अक्सर ऊँचे भाव पर फँसते हैं।" if chg * rec.get("chg1", 0) > 0 and abs(chg) > 0.05
+               else "भाव कुछ वापस लौटा (पुलबैक)। तेज़ चाल के बाद ऐसा अक्सर होता है।" if abs(chg) > 0.05
+               else "भाव लगभग वहीं ठहरा रहा।")
+    else:
+        what = "ट्रेंड का बदलाव"
+        les = "ट्रेंड बदलने के बाद भाव का क्या हुआ, इसे जर्नल में लिखो। इसी से पैटर्न पहचानना आता है।"
+    top = "🧪 <b>यह सिर्फ़ टेस्ट है (असली नहीं)</b>\n\n" if test else ""
+    return (
+        f"{top}⏱ <b>4 घंटे बाद: {esc(rec['emoji'])} {esc(rec['name'])}</b>\n\n"
+        f"🔔 अलर्ट के वक़्त ({esc(what)}): भाव {esc(f(rec['price']))}\n"
+        f"📍 अब: भाव {esc(f(now))} ({chg:+.2f}%), RSI {rv:.0f}\n\n"
+        f"🧠 सीख: {esc(les)}\n\n"
+        f"ऐसे मैसेज इसलिए आते हैं कि तुम देख सको, हर संकेत के बाद असल में क्या हुआ, चाहे जो भी हुआ हो।\n"
+        f"⚠️ सिर्फ़ पढ़ाई के लिए, ख़रीद-बिक्री की सलाह नहीं।\n{esc(rec['tag'])}"
+    )[:4090]
+
+
+WELCOME = (
+    "👋 <b>Kartik Agari Trading Hindi में स्वागत है</b>\n\n"
+    "मैं कार्तिक आगरी (Kartik Agari), अल्मोड़ा, उत्तराखंड के एक गाँव से। "
+    "यहाँ क्रिप्टो और फॉरेक्स ट्रेडिंग हिंदी में सीखो, पूरी तरह मुफ़्त।\n\n"
+    "📅 <b>यहाँ क्या-क्या आता है</b>\n"
+    "🌅 सुबह 8 बजे: बाज़ार की सुबह की समरी\n"
+    "📡 LIVE बोर्ड: Bitcoin, Ethereum, Gold, EUR/USD, Nasdaq का हाल। ये मैसेज हर 5 मिनट पर अपने आप बदलते हैं\n"
+    "🔔 बड़े बदलाव पर: असली आँकड़ों के साथ सीखने वाला अलर्ट\n"
+    "⏱ 4 घंटे बाद: अलर्ट के बाद असल में क्या हुआ, ईमानदारी से\n"
+    "📰 बड़ी ख़बर से 10 मिनट पहले: चेतावनी\n"
+    "🧠 शाम 7 बजे: रोज़ एक क्विज़\n\n"
+    "🌐 वेबसाइट (पाठ, चार्ट के उदाहरण, गुरु से सवाल, ट्रेड रिव्यू): kartikagaritrading.github.io\n"
+    "📝 ब्लॉग: kartiktradinghindi.blogspot.com\n\n"
+    "⚠️ <b>यह चैनल सिर्फ़ शिक्षा के लिए है।</b> यहाँ कोई ख़रीद-बिक्री की सलाह या सिग्नल नहीं मिलता। "
+    "ट्रेडिंग में पैसा डूब सकता है।"
+)
+
+
 def alert_events(name, a, tfs, st, prev):
-    """(chabi, shirshak, shiksha-text) ki suchi: sirf bade badlaav par."""
+    """(chabi, shirshak, kism) ki suchi: sirf bade badlaav par."""
     ev = []
-    tf4 = {n: s for n, s, _ in tfs}
+    tf4 = {n: s_ for n, s_, _ in tfs}
     for k in ("4h", "1d"):
         if k in tf4 and prev.get("tf", {}).get(k) and prev["tf"][k] != tf4[k]:
-            ev.append((f"tf_{k}", f"{k} का ट्रेंड {TF_WORD[prev['tf'][k]]} से {TF_WORD[tf4[k]]} में बदला", LEARN_TF))
+            ev.append((f"tf_{k}", f"{k} का ट्रेंड {TF_WORD[prev['tf'][k]]} से {TF_WORD[tf4[k]]} में बदला", "tf"))
     rv = float(a["rsi"].iloc[-1])
     z = "ob" if rv > 70 else "os" if rv < 30 else "n"
     if prev.get("rz") and prev["rz"] != z:
         if z == "ob":
-            ev.append(("rsi", f"RSI {rv:.0f}: ओवरबॉट ज़ोन (70 से ऊपर) में पहुँचा", LEARN_RSI_OB))
+            ev.append(("rsi", f"RSI {rv:.0f}: ओवरबॉट ज़ोन (70 से ऊपर) में पहुँचा", "rsi_ob"))
         elif z == "os":
-            ev.append(("rsi", f"RSI {rv:.0f}: ओवरसोल्ड ज़ोन (30 से नीचे) में पहुँचा", LEARN_RSI_OS))
+            ev.append(("rsi", f"RSI {rv:.0f}: ओवरसोल्ड ज़ोन (30 से नीचे) में पहुँचा", "rsi_os"))
     return ev, {"tf": tf4, "rz": z}
 
 
@@ -277,6 +392,8 @@ def main():
         print("khabar suchi nahi mili:", e)
     FG = P.fear_greed()
     s = load()
+    if os.environ.get("FORCE_NEW") == "w":      # swaagat sandesh (ek baar, ise pin karo)
+        tg_send_text(WELCOME, rich=True)
     now_ts = time.time()
     force = os.environ.get("FORCE_NEW") == "1"
     rows = []
@@ -312,23 +429,30 @@ def main():
             ev, snap = alert_events(name, a, tfs, st, m)
             big = abs(a["chg1"]) >= limit
             if big:
-                ev.append(("move", f"1 घंटे में {a['chg1']:+.2f}% की बड़ी चाल", LEARN_MOVE))
-            if os.environ.get("FORCE_NEW") == "a" and name == "EUR/USD":     # jaanch: namuna alert turant
-                tg_send_text((f"🧪 यह सिर्फ़ टेस्ट अलर्ट है (असली नहीं)\n\n🔔 {emoji} {name} — नया बदलाव\n\n💰 {f(a['now'])}\n"
-                              f"⚡ क्या हुआ: RSI {float(a['rsi'].iloc[-1]):.0f}: ओवरसोल्ड ज़ोन (30 से नीचे) में पहुँचा\n\n"
-                              f"{context_lines(a, tfs, st, f)}\n\n{LEARN_RSI_OS}\n\n"
-                              "🤖 और सवाल? वेबसाइट पर गुरु से पूछो: kartikagaritrading.github.io\n"
-                              "⚠️ सिर्फ़ पढ़ाई के लिए, ख़रीद-बिक्री की सलाह नहीं।\n" + tag)[:4000])
+                ev.append(("move", f"1 घंटे में {a['chg1']:+.2f}% की बड़ी चाल", "move"))
+            fl = s.setdefault("_follow", [])
+            if os.environ.get("FORCE_NEW") == "a" and name == "EUR/USD":     # jaanch: namune turant
+                tg_send_text(build_alert(emoji, name, tag, a, tfs, st, f,
+                                         f"RSI {float(a['rsi'].iloc[-1]):.0f}: ओवरसोल्ड ज़ोन (30 से नीचे) में पहुँचा",
+                                         "rsi_os", True, test=True), rich=True)
+                tg_send_text(build_followup({"emoji": emoji, "name": name, "tag": tag, "kind": "rsi_os",
+                                             "price": a["now"] * 1.003, "rsi": 27.0}, a, f, test=True), rich=True)
+            # 4 ghante baad ka naatija
+            for rec in [x for x in fl if x["name"] == name and now_ts - x["ts"] >= 4 * 3600]:
+                if tg_send_text(build_followup(rec, a, f), rich=True):
+                    fl.remove(rec)
+            s["_follow"] = [x for x in fl if now_ts - x["ts"] < 12 * 3600]
             cd = m.setdefault("cd", {})
-            fresh = [(k, t, mt) for k, t, mt in ev if now_ts - cd.get(k, 0) > COOLDOWN_MIN * 60]
+            fresh = [(k, t, kd) for k, t, kd in ev if now_ts - cd.get(k, 0) > COOLDOWN_MIN * 60]
             if fresh and m.get("tf"):       # pehli baar sirf snapshot lo
-                ctx = context_lines(a, tfs, st, f)
-                for k, t, mt in fresh:
-                    msg = (f"🔔 {emoji} {name} — नया बदलाव\n\n💰 {f(a['now'])}\n"
-                           f"⚡ क्या हुआ: {t}\n\n{ctx}\n\n{mt}\n\n"
-                           "🤖 और सवाल? वेबसाइट पर गुरु से पूछो: kartikagaritrading.github.io\n"
-                           "⚠️ सिर्फ़ पढ़ाई के लिए, ख़रीद-बिक्री की सलाह नहीं।\n" + tag)
-                    tg_send_text(msg[:4000])
+                seen = m.setdefault("seen", [])
+                for k, t, kd in fresh:
+                    first = kd not in seen
+                    if tg_send_text(build_alert(emoji, name, tag, a, tfs, st, f, t, kd, first), rich=True):
+                        if first:
+                            seen.append(kd)
+                        s["_follow"].append({"name": name, "emoji": emoji, "tag": tag, "ts": now_ts, "price": a["now"],
+                                             "kind": kd, "rsi": float(a["rsi"].iloc[-1]), "chg1": float(a["chg1"])})
                     cd[k] = now_ts
                 m.update(snap)
                 save(s)                      # turant yaad rakho, taaki dobara na jaaye
@@ -346,6 +470,21 @@ def main():
                 s["_morning"] = today
     except Exception as e:
         print("subah saaransh error:", type(e).__name__, e)
+    try:      # shaam 7 baje roz ek quiz. FORCE_NEW=q likhne par turant (jaanch)
+        n = M.ist_now()
+        today = n.strftime("%Y-%m-%d")
+        test = os.environ.get("FORCE_NEW") == "q"
+        if Q and (test or (s.get("_quiz") != today and (19, 0) <= (n.hour, n.minute) < (19, 45))):
+            i = s.get("_qi", 0) % len(Q.QUIZ)
+            qq, opts, ok, why = Q.QUIZ[i]
+            order = list(range(len(opts)))
+            random.Random(i * 7 + 3).shuffle(order)
+            opts2 = [opts[j] for j in order]
+            if tg_send_quiz("🧠 आज का सवाल: " + qq, opts2, order.index(ok), "✅ " + why) and not test:
+                s["_quiz"] = today
+                s["_qi"] = i + 1
+    except Exception as e:
+        print("quiz error:", type(e).__name__, e)
     save(s)
 
 
