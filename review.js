@@ -9,6 +9,8 @@ var T={
  title:["Trade review","ट्रेड रिव्यू"],
  priv:["Your photo stays on this phone. It is not uploaded and nobody reads it. The review below is made from your answers by simple rules, not by AI.","तुम्हारी फोटो इसी फ़ोन में रहती है। वह कहीं भेजी नहीं जाती और उसे कोई नहीं पढ़ता। नीचे की जाँच तुम्हारे जवाबों से सीधे नियमों से बनती है, AI से नहीं।"],
  pick:["🖼️ Choose photo or screenshot","🖼️ गैलरी से फोटो या स्क्रीनशॉट चुनो"],
+ qlab:["Ask about this chart or trade","इस चार्ट या ट्रेड के बारे में पूछो"],qph:["e.g. Where should my stop be?","जैसे: मेरा स्टॉप कहाँ होना चाहिए?"],qsend:["Ask the Guru","गुरु से पूछो"],
+ qnote:["The Guru does not read your photo. It finds the lesson that matches your words and shows its chart.","गुरु तुम्हारी फोटो नहीं पढ़ता। वह तुम्हारे शब्दों से मिलता पाठ ढूँढकर उसका चार्ट दिखाता है।"],
  cam:["📸 Take a photo now","📸 कैमरे से अभी फोटो खींचो"],
  micno:["Voice typing does not work in this browser. Tap the 🎤 on your phone keyboard, or open the site in Chrome.","इस ब्राउज़र में आवाज़ से लिखना नहीं चलता। फ़ोन के कीबोर्ड का 🎤 दबाओ, या साइट को Chrome में खोलो।"],
  opt:["(optional, it shows below once chosen)","(ज़रूरी नहीं, चुनने पर नीचे दिखेगी)"],
@@ -36,7 +38,7 @@ var css='#kxrev{position:fixed;inset:0;z-index:1000;background:#070c18;overflow-
 '#kxrev .in{max-width:620px;margin:0 auto;padding:16px 16px 60px;color:#e9eef8;font:16px/1.6 Inter,Hind,sans-serif}'+
 '#kxrev h2{margin:6px 0 4px;font-size:22px}#kxrev .p{color:#93a1bd;font-size:14px;margin:0 0 12px}'+
 '#kxrev label{display:block;font:600 14px Inter,Hind,sans-serif;color:#93a1bd;margin:12px 0 4px}'+
-'#kxrev input[type=number],#kxrev select{width:100%;box-sizing:border-box;background:#0b1220;color:#e9eef8;border:1px solid #1f2b45;border-radius:9px;padding:11px 12px;font:16px Inter,Hind,sans-serif;min-height:46px}'+
+'#kxrev .qrow{display:flex;gap:8px}#kxrev .qrow input{flex:1}#kxrev .qrow .b{min-width:50px}#kxrev .kxmic2.on{background:#ff5c6c;color:#fff;border-color:#ff5c6c}#kxrev input[type=text],#kxrev input[type=number],#kxrev select{width:100%;box-sizing:border-box;background:#0b1220;color:#e9eef8;border:1px solid #1f2b45;border-radius:9px;padding:11px 12px;font:16px Inter,Hind,sans-serif;min-height:46px}'+
 '#kxrev label.b{display:inline-block;margin:0 8px 8px 0;text-align:center;color:#e9eef8;font:600 15px/30px Inter,Hind,sans-serif}#kxrev .seg{display:flex;gap:8px}#kxrev .seg button,#kxrev .b{min-height:46px;border-radius:9px;border:1px solid #1f2b45;background:#0b1220;color:#e9eef8;font:600 15px Inter,Hind,sans-serif;cursor:pointer;padding:8px 12px}'+
 '#kxrev .seg button{flex:1}#kxrev .seg button[aria-pressed=true],#kxrev .b.gold{background:#ffb02e;color:#1a1200;border-color:#ffb02e}'+
 '#kxrev img{display:block;max-width:100%;max-height:260px;margin:10px auto 0;border-radius:10px;border:1px solid #1f2b45}'+
@@ -50,6 +52,7 @@ function form(){
  var h='<div class="in"><h2>📋 '+t(T.title)+'</h2><p class="p">'+t(T.priv)+'</p>'+
  '<label class="b" for="kxf">'+t(T.pick)+'</label><label class="b" for="kxc">'+t(T.cam)+'</label><small class="p" style="display:block;margin-bottom:6px">'+t(T.opt)+'</small>'+
  '<input id="kxf" type="file" accept="image/*" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"><input id="kxc" type="file" accept="image/*" capture="environment" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"><div id="kxprev"></div>'+
+ '<label>'+t(T.qlab)+'</label><div class="qrow"><input id="kxask" type="text" autocomplete="off" placeholder="'+t(T.qph)+'"><button type="button" class="b kxmic2" id="kxm" aria-label="mic">🎤</button></div><button type="button" class="b" id="kxsend" style="margin-top:8px">'+t(T.qsend)+'</button><p class="p" style="margin-top:6px">'+t(T.qnote)+'</p>'+
  '<label>'+t(T.side)+'</label><div class="seg"><button type="button" data-s="buy" aria-pressed="'+(st.side==='buy')+'">'+t(T.buy)+'</button><button type="button" data-s="sell" aria-pressed="'+(st.side==='sell')+'">'+t(T.sell)+'</button></div>'+
  '<label>'+t(T.en)+'</label><input id="kxe" type="number" inputmode="decimal" step="any">'+
  '<label>'+t(T.sl)+'</label><input id="kxs" type="number" inputmode="decimal" step="any">'+
@@ -134,11 +137,14 @@ function open(){
   rd.readAsDataURL(fl)};
  [f,g].forEach(function(inp){inp.onchange=function(){pickFrom(inp)};inp.oninput=function(){pickFrom(inp)}});
  var iv=setInterval(function(){if(!box.classList.contains('on')){clearInterval(iv);return}[f,g].forEach(pickFrom)},700);
+ box.querySelector('#kxm').onclick=function(){dictate(box.querySelector('#kxask'),box.querySelector('#kxm'))};
+ box.querySelector('#kxsend').onclick=function(){var v=(box.querySelector('#kxask').value||'').trim();if(!v){box.querySelector('#kxask').focus();return}closeIt();var q=document.getElementById('q'),fm=document.getElementById('ask');if(!q||!fm)return;q.value=v;if(fm.requestSubmit)fm.requestSubmit();else fm.dispatchEvent(new Event('submit',{cancelable:true,bubbles:true}));var m=document.getElementById('msgs');if(m&&m.scrollIntoView)m.scrollIntoView({block:'center'})};
  box.querySelectorAll('[data-s]').forEach(function(b){b.onclick=function(){st.side=b.getAttribute('data-s');box.querySelectorAll('[data-s]').forEach(function(c){c.setAttribute('aria-pressed',String(c===b))})}});
  box.querySelector('#kxgo').onclick=function(){show(check())};
  wire2();
  if(st.url)box.querySelector('#kxprev').innerHTML='<img src="'+st.url+'" alt="">';
 }
+function dictate(inp,btn){var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){inp.focus();toast(t(T.micno));return}var r;try{r=new SR()}catch(e){inp.focus();toast(t(T.micno));return}r.lang=lang()==='en'?'en-IN':'hi-IN';r.interimResults=true;r.continuous=false;btn.classList.add('on');btn.textContent='⏺';r.onresult=function(e){var q='';for(var i=0;i<e.results.length;i++)q+=e.results[i][0].transcript;inp.value=q};r.onerror=function(){toast(t(T.micerr))};r.onend=function(){btn.classList.remove('on');btn.textContent='🎤'};try{r.start()}catch(e){btn.classList.remove('on');btn.textContent='🎤'}}
 function toast(m){var d=document.createElement('div');d.textContent=m;d.setAttribute('role','status');d.style.cssText='position:fixed;left:12px;right:12px;bottom:18px;z-index:2000;background:#18233c;color:#e9eef8;border:1px solid #ffb02e;border-radius:10px;padding:12px 14px;font:15px/1.5 Inter,Hind,sans-serif;text-align:center';document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d)},7000)}
 function init(){
  var ask=document.getElementById('ask');if(!ask||ask.querySelector('.kxcam'))return;
