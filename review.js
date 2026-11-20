@@ -8,8 +8,12 @@ var T={
  open:["Check my trade with a photo","फोटो से अपना ट्रेड जाँचो"],
  title:["Trade review","ट्रेड रिव्यू"],
  priv:["Your photo stays on this phone. It is not uploaded and nobody reads it. The review below is made from your answers by simple rules, not by AI.","तुम्हारी फोटो इसी फ़ोन में रहती है। वह कहीं भेजी नहीं जाती और उसे कोई नहीं पढ़ता। नीचे की जाँच तुम्हारे जवाबों से सीधे नियमों से बनती है, AI से नहीं।"],
- pick:["📷 Choose photo or screenshot","📷 फोटो या स्क्रीनशॉट चुनो"],
- opt:["(optional, to look at while you answer)","(ज़रूरी नहीं, जवाब देते समय देखने के लिए)"],
+ pick:["🖼️ Choose photo or screenshot","🖼️ गैलरी से फोटो या स्क्रीनशॉट चुनो"],
+ cam:["📸 Take a photo now","📸 कैमरे से अभी फोटो खींचो"],
+ micno:["Voice typing does not work in this browser. Tap the 🎤 on your phone keyboard, or open the site in Chrome.","इस ब्राउज़र में आवाज़ से लिखना नहीं चलता। फ़ोन के कीबोर्ड का 🎤 दबाओ, या साइट को Chrome में खोलो।"],
+ opt:["(optional, it shows below once chosen)","(ज़रूरी नहीं, चुनने पर नीचे दिखेगी)"],
+ photook:["Photo chosen","फोटो चुन ली गई"],photobad:["This photo could not be opened. Try a screenshot or another photo.","यह फोटो खुल नहीं पाई। स्क्रीनशॉट या दूसरी फोटो चुनकर देखो।"],photowait:["Opening the photo...","फोटो खुल रही है..."],
+ micl:["Speak your question (voice is turned into text by your browser)","बोलकर पूछो (आवाज़ को तुम्हारा ब्राउज़र टेक्स्ट बनाता है)"],micerr:["Mic did not work. Allow the microphone and try again.","माइक नहीं चला। माइक की अनुमति दो और फिर कोशिश करो।"],micon:["Listening... speak now","सुन रहा हूँ... अब बोलो"],
  side:["Direction","दिशा"],buy:["Buy (long)","खरीदा (लॉन्ग)"],sell:["Sell (short)","बेचा (शॉर्ट)"],
  en:["Entry price","एंट्री भाव"],sl:["Stop-loss price (blank if none)","स्टॉप-लॉस भाव (नहीं था तो खाली)"],tg:["Target price (optional)","टारगेट भाव (ज़रूरी नहीं)"],
  go:["Check my trade","मेरा ट्रेड जाँचो"],close:["Close","बंद करो"],again:["Check another","दूसरा जाँचो"],
@@ -33,19 +37,19 @@ var css='#kxrev{position:fixed;inset:0;z-index:1000;background:#070c18;overflow-
 '#kxrev h2{margin:6px 0 4px;font-size:22px}#kxrev .p{color:#93a1bd;font-size:14px;margin:0 0 12px}'+
 '#kxrev label{display:block;font:600 14px Inter,Hind,sans-serif;color:#93a1bd;margin:12px 0 4px}'+
 '#kxrev input[type=number],#kxrev select{width:100%;box-sizing:border-box;background:#0b1220;color:#e9eef8;border:1px solid #1f2b45;border-radius:9px;padding:11px 12px;font:16px Inter,Hind,sans-serif;min-height:46px}'+
-'#kxrev .seg{display:flex;gap:8px}#kxrev .seg button,#kxrev .b{min-height:46px;border-radius:9px;border:1px solid #1f2b45;background:#0b1220;color:#e9eef8;font:600 15px Inter,Hind,sans-serif;cursor:pointer;padding:8px 12px}'+
+'#kxrev label.b{display:inline-block;margin:0 8px 8px 0;text-align:center;color:#e9eef8;font:600 15px/30px Inter,Hind,sans-serif}#kxrev .seg{display:flex;gap:8px}#kxrev .seg button,#kxrev .b{min-height:46px;border-radius:9px;border:1px solid #1f2b45;background:#0b1220;color:#e9eef8;font:600 15px Inter,Hind,sans-serif;cursor:pointer;padding:8px 12px}'+
 '#kxrev .seg button{flex:1}#kxrev .seg button[aria-pressed=true],#kxrev .b.gold{background:#ffb02e;color:#1a1200;border-color:#ffb02e}'+
 '#kxrev img{display:block;max-width:100%;max-height:260px;margin:10px auto 0;border-radius:10px;border:1px solid #1f2b45}'+
 '#kxrev .r{border-radius:10px;padding:10px 12px;margin:8px 0;background:rgba(255,255,255,.04);border-left:4px solid #ffb02e}#kxrev .r.g{border-left-color:#2bd98a}#kxrev .r.x{border-left-color:#ff5c6c}'+
 '#kxrev .r button{margin-top:6px;background:none;border:1px solid #ffb02e;color:#ffb02e;border-radius:8px;padding:6px 10px;font:600 14px Inter,Hind,sans-serif;cursor:pointer;min-height:36px}'+
 '#kxrev .row{display:flex;gap:10px;margin-top:16px}#kxrev .row .b{flex:1}'+
-'.kxcam{min-width:46px;padding:0 10px;font-size:20px;background:#0b1220;border:1px solid #1f2b45;border-radius:9px;cursor:pointer;color:#e9eef8}';
+'.kxmic.on{background:#ff5c6c;color:#fff;border-color:#ff5c6c}.kxcam{min-width:46px;padding:0 10px;font-size:20px;background:#0b1220;border:1px solid #1f2b45;border-radius:9px;cursor:pointer;color:#e9eef8}';
 var st={side:'buy',url:null,a:{}},box;
 function el(h){var d=document.createElement('div');d.innerHTML=h;return d.firstChild}
 function form(){
  var h='<div class="in"><h2>📋 '+t(T.title)+'</h2><p class="p">'+t(T.priv)+'</p>'+
- '<button type="button" class="b" id="kxpick">'+t(T.pick)+'</button> <small class="p">'+t(T.opt)+'</small>'+
- '<input id="kxf" type="file" accept="image/*" hidden><div id="kxprev"></div>'+
+ '<label class="b" for="kxf">'+t(T.pick)+'</label><label class="b" for="kxc">'+t(T.cam)+'</label><small class="p" style="display:block;margin-bottom:6px">'+t(T.opt)+'</small>'+
+ '<input id="kxf" type="file" accept="image/*" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"><input id="kxc" type="file" accept="image/*" capture="environment" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"><div id="kxprev"></div>'+
  '<label>'+t(T.side)+'</label><div class="seg"><button type="button" data-s="buy" aria-pressed="'+(st.side==='buy')+'">'+t(T.buy)+'</button><button type="button" data-s="sell" aria-pressed="'+(st.side==='sell')+'">'+t(T.sell)+'</button></div>'+
  '<label>'+t(T.en)+'</label><input id="kxe" type="number" inputmode="decimal" step="any">'+
  '<label>'+t(T.sl)+'</label><input id="kxs" type="number" inputmode="decimal" step="any">'+
@@ -117,14 +121,25 @@ function wire2(){
 }
 function open(){
  box.innerHTML=form();box.classList.add('on');box.scrollTop=0;document.body.style.overflow='hidden';
- var f=box.querySelector('#kxf');
- box.querySelector('#kxpick').onclick=function(){f.click()};
- f.onchange=function(){var fl=f.files&&f.files[0];if(!fl)return;if(st.url){try{URL.revokeObjectURL(st.url)}catch(e){}}st.url=URL.createObjectURL(fl);box.querySelector('#kxprev').innerHTML='<img src="'+st.url+'" alt="">'};
+ var f=box.querySelector('#kxf'),g=box.querySelector('#kxc'),seen=null;
+ var pickFrom=function(inp){var fl=inp.files&&inp.files[0];if(!fl||fl===seen)return;seen=fl;var pv=box.querySelector('#kxprev');if(!pv)return;pv.innerHTML='<small class="p">⏳ '+t(T.photowait)+'</small>';
+  var rd=new FileReader();
+  rd.onerror=function(){pv.innerHTML='<small class="p">⚠️ '+t(T.photobad)+'</small>'};
+  rd.onload=function(){var im=new Image();
+   im.onerror=function(){pv.innerHTML='<small class="p">⚠️ '+t(T.photobad)+'</small>'};
+   im.onload=function(){var sc=Math.min(1,1000/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*sc));c.height=Math.max(1,Math.round(im.height*sc));
+    try{c.getContext('2d').drawImage(im,0,0,c.width,c.height);st.url=c.toDataURL('image/jpeg',.85)}catch(e){st.url=rd.result}
+    pv.innerHTML='<img src="'+st.url+'" alt=""><small class="p">✅ '+t(T.photook)+(fl.name?': '+esc(fl.name):'')+'</small>'};
+   im.src=rd.result};
+  rd.readAsDataURL(fl)};
+ [f,g].forEach(function(inp){inp.onchange=function(){pickFrom(inp)};inp.oninput=function(){pickFrom(inp)}});
+ var iv=setInterval(function(){if(!box.classList.contains('on')){clearInterval(iv);return}[f,g].forEach(pickFrom)},700);
  box.querySelectorAll('[data-s]').forEach(function(b){b.onclick=function(){st.side=b.getAttribute('data-s');box.querySelectorAll('[data-s]').forEach(function(c){c.setAttribute('aria-pressed',String(c===b))})}});
  box.querySelector('#kxgo').onclick=function(){show(check())};
  wire2();
  if(st.url)box.querySelector('#kxprev').innerHTML='<img src="'+st.url+'" alt="">';
 }
+function toast(m){var d=document.createElement('div');d.textContent=m;d.setAttribute('role','status');d.style.cssText='position:fixed;left:12px;right:12px;bottom:18px;z-index:2000;background:#18233c;color:#e9eef8;border:1px solid #ffb02e;border-radius:10px;padding:12px 14px;font:15px/1.5 Inter,Hind,sans-serif;text-align:center';document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d)},7000)}
 function init(){
  var ask=document.getElementById('ask');if(!ask||ask.querySelector('.kxcam'))return;
  var s=document.createElement('style');s.textContent=css;document.head.appendChild(s);
@@ -133,6 +148,19 @@ function init(){
  b.setAttribute('aria-label',T.open[0]);b.title=T.open[1];
  b.onclick=function(){st.url=null;open()};
  ask.insertBefore(b,ask.querySelector('button[type=submit]'));
+
+ var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ {var mb=document.createElement('button');mb.type='button';mb.className='kxcam kxmic';mb.textContent='🎤';
+  mb.setAttribute('aria-label',T.micl[0]);mb.title=T.micl[1];
+  mb.onclick=function(){var inp=document.getElementById('q');if(!inp)return;var r;if(!SR){inp.focus();toast(t(T.micno));return}try{r=new SR()}catch(e){inp.focus();toast(t(T.micno));return}
+   var L=lang();r.lang=L==='en'?'en-IN':'hi-IN';r.interimResults=true;r.maxAlternatives=1;r.continuous=false;var fin='',old=inp.placeholder;
+   mb.classList.add('on');mb.textContent='⏺';inp.value='';inp.placeholder=t(T.micon);
+   r.onresult=function(e){var q='';for(var i=0;i<e.results.length;i++)q+=e.results[i][0].transcript;inp.value=q;fin=q};
+   r.onerror=function(){inp.placeholder=t(T.micerr);toast(t(T.micerr))};
+   r.onend=function(){mb.classList.remove('on');mb.textContent='🎤';if(inp.placeholder===t(T.micon))inp.placeholder=old;
+    if(fin.trim()){if(ask.requestSubmit)ask.requestSubmit();else ask.dispatchEvent(new Event('submit',{cancelable:true,bubbles:true}))}};
+   try{r.start()}catch(e){mb.classList.remove('on');mb.textContent='🎤'}};
+  ask.insertBefore(mb,b)}
  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&box.classList.contains('on'))closeIt()});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
