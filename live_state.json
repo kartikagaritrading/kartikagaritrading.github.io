@@ -82,8 +82,8 @@
   },
   "tf": {
    "5m": "down",
-   "15m": "side",
-   "1h": "down",
+   "15m": "up",
+   "1h": "side",
    "4h": "down",
    "1d": "down",
    "1w": "down"
@@ -116,16 +116,6 @@
  },
  "_morning": "2026-11-20",
  "_follow": [
-  {
-   "name": "BITCOIN",
-   "emoji": "🟠",
-   "tag": "#Bitcoin",
-   "ts": 1795181747.9294894,
-   "price": 61246.73828125,
-   "kind": "rsi_os",
-   "rsi": 29.688397425456017,
-   "chg1": -0.41180767276422764
-  },
   {
    "name": "NASDAQ",
    "emoji": "📈",
