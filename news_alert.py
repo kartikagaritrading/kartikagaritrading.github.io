@@ -22,23 +22,99 @@ AFFECT = {
 # kis khabar ko bheja jaye: USD ki High aur Medium, baaki mudraon ki sirf High
 def wanted(impact, cur):
     return impact == "High" or (impact == "Medium" and cur == "USD")
-EXPLAIN = [
-    (("cpi", "inflation"), "महँगाई का आँकड़ा। अनुमान से ज़्यादा आए तो ब्याज दर घटने की उम्मीद कम होती है, और बाज़ार अक्सर तेज़ी से हिलता है।"),
-    (("non-farm", "nfp", "employment change"), "अमेरिका में नई नौकरियों का आँकड़ा। यह डॉलर, सोने और Crypto, तीनों को तेज़ी से हिला सकता है।"),
-    (("federal funds", "fomc", "interest rate", "rate statement", "rate decision"), "ब्याज दर का फ़ैसला। यह सबसे बड़ी ख़बरों में से एक है, चाल बहुत तेज़ और उलटी-पुलटी हो सकती है।"),
-    (("speaks", "testifies", "press conference"), "बड़े अधिकारी का बयान। एक-एक शब्द पर भाव झटके से बदल सकता है।"),
-    (("unemployment", "jobless"), "बेरोज़गारी का आँकड़ा। नौकरियों की तस्वीर से डॉलर की चाल तय होती है।"),
-    (("gdp",), "अर्थव्यवस्था की रफ़्तार का आँकड़ा। बाज़ार इस पर सोच बदल सकता है।"),
-    (("retail sales", "ppi"), "ख़रीदारी या थोक महँगाई का आँकड़ा। अनुमान से फ़र्क़ आए तो चाल तेज़ हो सकती है।"),
+SITE = "https://kartikagaritrading.github.io"
+CURN = {"USD": "डॉलर", "EUR": "यूरो", "GBP": "पाउंड", "JPY": "येन", "CNY": "युआन"}
+# (खोजने के शब्द, हिंदी नाम, पूरा नाम, यह क्या है, क्यों ज़रूरी, ज़्यादा आँकड़ा = मुद्रा मज़बूत? +1 / -1 / 0)
+NEWS = [
+    (("adp",), "ADP निजी नौकरियाँ", "ADP Employment Change",
+     "निजी कंपनियों में पिछले महीने कितनी नई नौकरियाँ बनीं, इसका अनुमान। इसे शुक्रवार की बड़ी जॉब रिपोर्ट (NFP) का पहला इशारा माना जाता है।",
+     "नौकरियाँ मज़बूत हों तो अर्थव्यवस्था मज़बूत दिखती है और ब्याज दर ऊँची रहने की उम्मीद बनती है।", 1),
+    (("core cpi", "cpi"), "CPI: उपभोक्ता महँगाई", "Consumer Price Index",
+     "आम लोग जो सामान और सेवाएँ ख़रीदते हैं, उनके दाम पिछले महीने या साल से कितने बढ़े। यह महँगाई नापने का सबसे मशहूर पैमाना है। (Core CPI में खाना और तेल हटा दिए जाते हैं।)",
+     "Fed ब्याज दर महँगाई देखकर तय करता है। और ब्याज दर से डॉलर, सोना, Crypto और शेयर, सब हिलते हैं। इसीलिए CPI सबसे तेज़ चाल वाली ख़बरों में है।", 1),
+    (("ppi",), "PPI: थोक महँगाई", "Producer Price Index",
+     "फ़ैक्ट्री और उत्पादक के स्तर पर दाम कितने बढ़े। दुकान तक पहुँचने से पहले की महँगाई।",
+     "अक्सर आगे आने वाली CPI का इशारा देती है।", 1),
+    (("pce",), "PCE: Fed की पसंदीदा महँगाई", "Personal Consumption Expenditures Price Index",
+     "महँगाई नापने का वह पैमाना, जिसे Fed सबसे ज़्यादा देखता है।",
+     "Fed की ब्याज दर की सोच सीधे इससे जुड़ी है।", 1),
+    (("non-farm", "nfp"), "NFP: अमेरिका की नौकरी रिपोर्ट", "Non-Farm Payrolls",
+     "खेती छोड़कर बाकी सभी क्षेत्रों में पिछले महीने कितनी नई नौकरियाँ बनीं।",
+     "मज़बूत नौकरियों का मतलब मज़बूत अर्थव्यवस्था, यानी ब्याज दर ऊँची रह सकती है। यह हर महीने की सबसे तेज़ चाल वाली ख़बरों में से एक है।", 1),
+    (("unemployment claims", "jobless"), "साप्ताहिक बेरोज़गारी दावे", "Initial Jobless Claims",
+     "इस हफ़्ते कितने लोगों ने बेरोज़गारी भत्ते के लिए पहली बार अर्ज़ी दी।",
+     "ज़्यादा दावे यानी नौकरी बाज़ार कमज़ोर, जो अर्थव्यवस्था की सुस्ती दिखा सकता है।", -1),
+    (("unemployment rate",), "बेरोज़गारी दर", "Unemployment Rate",
+     "काम चाहने वालों में कितने प्रतिशत लोगों के पास काम नहीं है।",
+     "बेरोज़गारी बढ़ना अर्थव्यवस्था के लिए कमज़ोर संकेत माना जाता है।", -1),
+    (("jolts",), "JOLTS: खाली नौकरियाँ", "Job Openings (JOLTS)",
+     "कंपनियों में कितनी नौकरियाँ खाली पड़ी हैं।",
+     "ज़्यादा खाली नौकरियाँ यानी मज़बूत माँग और टिकी हुई महँगाई का दबाव।", 1),
+    (("minutes",), "FOMC बैठक का ब्योरा", "FOMC Meeting Minutes",
+     "Fed की पिछली बैठक में अधिकारियों ने क्या-क्या बहस की, उसका लिखित ब्योरा।",
+     "इसमें ब्याज दर की आगे की सोच के संकेत होते हैं। शब्दों से बाज़ार हिल सकता है।", 0),
+    (("federal funds", "interest rate", "rate decision", "main refinancing", "bank rate", "cash rate", "official bank"), "ब्याज दर का फ़ैसला", "Central Bank Interest Rate Decision",
+     "देश का केंद्रीय बैंक (अमेरिका में Fed) ब्याज दर बढ़ाता है, घटाता है या वैसी ही रखता है।",
+     "यह सबसे बड़ी ख़बरों में से एक है। चाल बहुत तेज़ और उलटी-पुलटी हो सकती है, क्योंकि बाज़ार पहले से अनुमान लगा चुका होता है।", 1),
+    (("fomc statement", "rate statement", "monetary policy statement"), "FOMC बयान", "FOMC Statement",
+     "ब्याज दर के फ़ैसले के साथ आने वाला लिखित बयान।",
+     "फ़ैसले से ज़्यादा बयान के शब्द बाज़ार को हिलाते हैं।", 0),
+    (("speaks", "testifies", "press conference"), "बड़े अधिकारी का बयान", "Central Bank Speech / Press Conference",
+     "केंद्रीय बैंक के बड़े अधिकारी का भाषण या प्रेस कॉन्फ्रेंस।",
+     "यहाँ कोई एक आँकड़ा नहीं होता। हर वाक्य पर भाव झटके से बदल सकता है।", 0),
+    (("gdp",), "GDP: अर्थव्यवस्था की रफ़्तार", "Gross Domestic Product",
+     "देश में एक तिमाही में कुल कितना उत्पादन और कमाई हुई।",
+     "अर्थव्यवस्था तेज़ है या सुस्त, यह इसी से दिखता है। इससे बाज़ार की सोच बदलती है।", 1),
+    (("retail sales",), "खुदरा बिक्री", "Retail Sales",
+     "दुकानों और ऑनलाइन में लोगों ने पिछले महीने कितनी ख़रीदारी की।",
+     "अमेरिका की अर्थव्यवस्था का बड़ा हिस्सा ख़रीदारी पर टिका है, इसलिए यह आँकड़ा अहम है।", 1),
+    (("ism", "pmi"), "PMI / ISM: कारोबार की सेहत", "Purchasing Managers' Index",
+     "कंपनियों के मैनेजरों से पूछकर बना सूचकांक। 50 से ऊपर यानी कारोबार बढ़ रहा है, 50 से नीचे यानी घट रहा है।",
+     "यह आने वाली आर्थिक चाल का शुरुआती इशारा देता है।", 1),
 ]
+DEFAULT = ("बड़ी ख़बर", "High-impact news", "यह बड़ी आर्थिक ख़बर है।", "आँकड़ा अनुमान से अलग आए तो बाज़ार में तेज़ हलचल हो सकती है।", 1)
+
+
+def info(title):
+    t = title.lower()
+    for keys, hn, en, what, why, sg in NEWS:
+        if any(k in t for k in keys):
+            return hn, en, what, why, sg
+    return DEFAULT
+
+
+def period_note(title):
+    t = title.lower()
+    if "y/y" in t:
+        return "y/y = पिछले साल की उसी अवधि से तुलना"
+    if "m/m" in t:
+        return "m/m = पिछले महीने से तुलना"
+    if "q/q" in t:
+        return "q/q = पिछली तिमाही से तुलना"
+    return ""
 
 
 def explain(title):
-    t = title.lower()
-    for keys, txt in EXPLAIN:
-        if any(k in t for k in keys):
-            return txt
-    return "यह बड़ी ख़बर है। आँकड़ा अनुमान से अलग आए तो बाज़ार में तेज़ हलचल हो सकती है।"
+    return info(title)[2]
+
+
+def scen(cur, sg):
+    n = CURN.get(cur, cur)
+    if sg == 0:
+        return (f"🔀 यहाँ शब्द मायने रखते हैं, आँकड़ा नहीं:\n"
+                f"• सख़्त (ब्याज दर ऊँची रखने वाला) लहजा → {n} अक्सर मज़बूत\n"
+                f"• नरम (ब्याज दर घटाने वाला) लहजा → {n} अक्सर कमज़ोर")
+    up, dn = ("ज़्यादा", "कम") if sg > 0 else ("कम", "ज़्यादा")
+    if cur == "USD":
+        eff_s = "सोना, Crypto, EUR/USD और Nasdaq पर अक्सर दबाव"
+        eff_w = "सोना, Crypto, EUR/USD और Nasdaq को अक्सर सहारा"
+    else:
+        eff_s = f"{n} से जुड़े जोड़े (जैसे EUR/USD) अक्सर चढ़ते हैं" if cur in ("EUR", "GBP") else f"{n} से जुड़े बाज़ार अक्सर चढ़ते हैं"
+        eff_w = f"{n} से जुड़े बाज़ार अक्सर गिरते हैं"
+    return (f"🔀 अलग-अलग नतीजे:\n"
+            f"📈 आँकड़ा अनुमान से {up} आया → {n} मज़बूत → {eff_s}\n"
+            f"📉 आँकड़ा अनुमान से {dn} आया → {n} कमज़ोर → {eff_w}\n"
+            f"⚖️ अनुमान के बराबर आया तो चाल अक्सर छोटी रहती है।")
 
 
 def load_events():
@@ -156,17 +232,24 @@ def context_notes(a):
 def header(ev):
     ist = A.ist(ev["t"]).strftime("%I:%M %p")
     mins = max(0, round((ev["t"] - dt.datetime.now(dt.timezone.utc)).total_seconds() / 60))
+    hn, en, what, why, sg = info(ev["title"])
+    pn = period_note(ev["title"])
     return (
         f"⚠️ {'बड़ी' if ev.get('imp', 'High') == 'High' else 'मध्यम'} ख़बर {mins} मिनट में\n\n"
-        f"📰 {ev['title']} ({ev['cur']})\n"
+        f"📰 {hn}\n"
+        f"({en} · {ev['title']} · {ev['cur']})\n"
         f"🕐 समय: {ist} (भारत)\n"
-        f"📊 अनुमान: {ev['fc']} | पिछला: {ev['pv']}\n\n"
-        f"ℹ️ {explain(ev['title'])}\n\n"
+        f"📊 अनुमान: {ev['fc']} | पिछला: {ev['pv']}" + (f"\n   ({pn})" if pn else "") + "\n\n"
+        f"📖 यह क्या है: {what}\n\n"
+        f"🎯 क्यों ज़रूरी: {why}\n\n"
+        f"{scen(ev['cur'], sg)}\n\n"
+        "💡 बाज़ार आँकड़े के अच्छे या बुरे होने पर नहीं, अनुमान से फ़र्क़ पर चलता है।\n\n"
         "🛡 ख़बर के समय क्या ध्यान रखें:\n"
         "• स्प्रेड बढ़ जाता है और भाव छलाँग मार सकता है।\n"
         "• Stop Loss अपेक्षा से दूर लग सकता है, स्लिपेज हो सकता है।\n"
         "• नया ट्रेड ख़बर के बाद पहली कुछ कैंडल देखकर ही लो।\n"
         "• लीवरेज कम रखो या ट्रेड से दूर रहो।\n\n"
+        f"📚 पूरा पाठ (चार्ट के उदाहरण के साथ): {SITE}/learn/news-and-calendar/\n\n"
         "नीचे हर मार्केट का चार्ट और सपोर्ट-रेज़िस्टेंस आ रहे हैं 👇\n"
         "⚠️ यह सिर्फ़ पढ़ाई के लिए है, ट्रेडिंग की सलाह नहीं।\n#News #Alert"
     )
@@ -211,6 +294,44 @@ def market_post(ev, name):
 PRE = {}
 
 
+def num(x):
+    try:
+        t = str(x).replace("%", "").replace(",", "").strip()
+        m = 1.0
+        if t[-1:] in "KMBT" and t[-1:]:
+            m = {"K": 1e3, "M": 1e6, "B": 1e9, "T": 1e12}[t[-1]]
+            t = t[:-1]
+        return float(t) * m
+    except Exception:
+        return None
+
+
+def surprise(ev, actual, sg):
+    a, f = num(actual), num(ev.get("fc"))
+    if a is None or f is None:
+        return ""
+    n = CURN.get(ev["cur"], ev["cur"])
+    if abs(a - f) < 1e-9:
+        return "⚖️ आँकड़ा अनुमान के बराबर आया। ऐसे में चाल अक्सर छोटी रहती है।\n\n"
+    hi = a > f
+    w = "ज़्यादा" if hi else "कम"
+    if sg == 0:
+        return f"⚖️ आँकड़ा अनुमान से {w} आया।\n\n"
+    strong = (hi and sg > 0) or ((not hi) and sg < 0)
+    return (f"⚖️ आँकड़ा अनुमान से {w} आया। आमतौर पर इसे {n} के लिए {'मज़बूत' if strong else 'कमज़ोर'} संकेत माना जाता है। "
+            "पर असली चाल इसके उलट भी हो सकती है, क्योंकि बाज़ार और भी बातें देखता है।\n\n")
+
+
+def after_text(ev, actual, lines):
+    sg = info(ev["title"])[4]
+    return (f"📣 ख़बर आ गई: {info(ev['title'])[0]} ({ev['cur']})\n\n"
+            f"🔢 असली आँकड़ा: {actual}\n📊 अनुमान: {ev['fc']} | पिछला: {ev['pv']}\n\n"
+            + surprise(ev, actual, sg)
+            + ("ख़बर से पहले के भाव से अब तक:\n" + "\n".join(lines) + "\n\n" if lines else "")
+            + "⏳ पहली चाल अक्सर झूठी निकलती है। कुछ कैंडल बंद होने दो और ऊपर की योजना के स्तर देखो।\n"
+            "⚠️ सिर्फ़ पढ़ाई के लिए, सलाह नहीं।\n#News")
+
+
 def after(ev):
     """Khabar ke baad: asli aankda aur bhav ki pratikriya."""
     for wait_min in (3, 7):
@@ -240,11 +361,7 @@ def after(ev):
                     lines.append(f"{emoji} {n}: {ch:+.2f}% ({'तेज़ी' if ch > 0.005 else 'गिरावट' if ch < -0.005 else 'लगभग स्थिर'})")
         except Exception as e:
             print(n, "after error:", e)
-    txt = (f"📣 ख़बर आ गई: {ev['title']} ({ev['cur']})\n\n"
-           f"🔢 असली आँकड़ा: {actual}\n📊 अनुमान: {ev['fc']} | पिछला: {ev['pv']}\n\n"
-           + ("ख़बर से पहले के भाव से अब तक:\n" + "\n".join(lines) + "\n\n" if lines else "")
-           + "⏳ पहली चाल अक्सर झूठी निकलती है। कुछ कैंडल बंद होने दो और ऊपर की योजना के स्तर देखो।\n"
-           "⚠️ सिर्फ़ पढ़ाई के लिए, सलाह नहीं।\n#News")
+    txt = after_text(ev, actual, lines)
     A.send_text(txt)
 
 
@@ -262,6 +379,7 @@ def main():
         ev = dict(id="test", t=dt.datetime.now(dt.timezone.utc) + dt.timedelta(minutes=LEAD),
                   title="CPI y/y (नमूना)", cur="USD", fc="3.1%", pv="3.2%")
         fire(ev)
+        A.send_text("🧪 नीचे ख़बर आने के बाद वाला संदेश कैसा दिखेगा, उसका नमूना (आँकड़ा काल्पनिक):\n\n" + after_text(ev, "3.4%", ["🟠 BITCOIN: -0.35% (गिरावट)", "🟡 GOLD: -0.20% (गिरावट)"]))
         return
     now = dt.datetime.now(dt.timezone.utc)
     sent = load_sent()
