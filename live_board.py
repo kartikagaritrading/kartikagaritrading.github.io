@@ -276,6 +276,21 @@ ONE = {
     "tf": "एक टाइमफ़्रेम का बदलाव पक्का उलटफेर नहीं। बाकी टाइमफ़्रेम से मिलाकर देखो।",
 }
 
+SITE = "https://kartikagaritrading.github.io"
+LESSON = {
+    "rsi_os": ("RSI", "rsi"),
+    "rsi_ob": ("RSI", "rsi"),
+    "move": ("पुलबैक", "pullback"),
+    "tf": ("मल्टी-टाइमफ़्रेम", "multi-timeframe"),
+}
+
+
+def lesson_line(kind):
+    n, sl = LESSON.get(kind, ("", ""))
+    if not sl:
+        return ""
+    return f"📖 पूरा पाठ ({n}, चार्ट के उदाहरण के साथ):\n{SITE}/learn/{sl}/\n"
+
 
 def build_alert(emoji, name, tag, a, tfs, st, f, title, kind, first, test=False):
     """Chhota sandesh ऊपर, poori seekh 'और पढ़ो' (expandable) mein. HTML."""
@@ -292,7 +307,8 @@ def build_alert(emoji, name, tag, a, tfs, st, f, title, kind, first, test=False)
         f"🧠 {esc(ONE[kind])}\n\n"
         f"👇 पूरी सीख खोलने के लिए नीचे \"और पढ़ो\" दबाओ\n"
         f"<blockquote expandable>{esc(detail)}</blockquote>\n"
-        f"🤖 और सवाल? वेबसाइट पर गुरु से पूछो: kartikagaritrading.github.io\n"
+        f"{lesson_line(kind)}"
+        f"🤖 और सवाल? गुरु से पूछो: kartikagaritrading.github.io\n"
         f"⚠️ सिर्फ़ पढ़ाई के लिए, ख़रीद-बिक्री की सलाह नहीं।\n{esc(tag)}"
     )
     return msg[:4090]
@@ -334,6 +350,7 @@ def build_followup(rec, a, f, test=False):
         f"📍 अब: भाव {esc(f(now))} ({chg:+.2f}%), RSI {rv:.0f}\n\n"
         f"🧠 सीख: {esc(les)}\n\n"
         f"ऐसे मैसेज इसलिए आते हैं कि तुम देख सको, हर संकेत के बाद असल में क्या हुआ, चाहे जो भी हुआ हो।\n"
+        f"{lesson_line(kind)}"
         f"⚠️ सिर्फ़ पढ़ाई के लिए, ख़रीद-बिक्री की सलाह नहीं।\n{esc(rec['tag'])}"
     )[:4090]
 
@@ -350,6 +367,7 @@ WELCOME = (
     "📰 बड़ी ख़बर से 10 मिनट पहले: चेतावनी\n"
     "🧠 शाम 7 बजे: रोज़ एक क्विज़\n\n"
     "🌐 वेबसाइट (पाठ, चार्ट के उदाहरण, गुरु से सवाल, ट्रेड रिव्यू): kartikagaritrading.github.io\n"
+    "📚 सारे पाठ: kartikagaritrading.github.io/learn/\n"
     "📝 ब्लॉग: kartiktradinghindi.blogspot.com\n\n"
     "⚠️ <b>यह चैनल सिर्फ़ शिक्षा के लिए है।</b> यहाँ कोई ख़रीद-बिक्री की सलाह या सिग्नल नहीं मिलता। "
     "ट्रेडिंग में पैसा डूब सकता है।"
