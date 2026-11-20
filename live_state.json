@@ -111,16 +111,6 @@
  "_morning": "2026-11-20",
  "_follow": [
   {
-   "name": "GOLD",
-   "emoji": "🟡",
-   "tag": "#Gold",
-   "ts": 1795139744.88484,
-   "price": 3567.199951171875,
-   "kind": "move",
-   "rsi": 14.644845019019016,
-   "chg1": -0.8477638606317147
-  },
-  {
    "name": "BITCOIN",
    "emoji": "🟠",
    "tag": "#Bitcoin",
