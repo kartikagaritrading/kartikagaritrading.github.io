@@ -78,7 +78,7 @@
   "tf": {
    "5m": "up",
    "15m": "up",
-   "1h": "down",
+   "1h": "side",
    "4h": "down",
    "1d": "down",
    "1w": "down"
@@ -110,16 +110,6 @@
  },
  "_morning": "2026-11-20",
  "_follow": [
-  {
-   "name": "BITCOIN",
-   "emoji": "🟠",
-   "tag": "#Bitcoin",
-   "ts": 1795140655.838295,
-   "price": 61363.80859375,
-   "kind": "rsi_os",
-   "rsi": 29.893923050403032,
-   "chg1": -0.1948372666949686
-  },
   {
    "name": "GOLD",
    "emoji": "🟡",
