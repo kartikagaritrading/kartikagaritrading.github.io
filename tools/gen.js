@@ -31,7 +31,7 @@ const head=(title,desc,url,extra)=>`<!doctype html>
 <link rel="canonical" href="${url}"><link rel="icon" type="image/png" href="/favicon.png">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${url}"><meta property="og:type" content="article"><meta property="og:site_name" content="Kartik Agari Trading">
 <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/style.css"><style>${PCSS}</style>${extra||''}</head><body>
+<link rel="stylesheet" href="/style.css"><style>${PCSS}</style>${extra||''}<script data-goatcounter="https://kartikagari.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script></head><body>
 <header class="top"><div class="wrap"><a class="brand" href="/"><i></i>Kartik Agari</a><nav aria-label="Menu"><a href="/learn/">All lessons · सारे पाठ</a><a href="/#tutor">AI Guru</a></nav><a class="btn gold sm" href="https://t.me/kartiktradinghindi" rel="noopener">Join Telegram</a></div></header>`;
 const foot='<p class="note">Education only. This is not advice to buy or sell. · सिर्फ़ सीखने के लिए। ख़रीदने या बेचने की सलाह नहीं।</p></div></body></html>';
 const plain=h=>h.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
