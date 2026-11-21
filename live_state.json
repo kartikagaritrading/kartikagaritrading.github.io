@@ -11,7 +11,7 @@
   },
   "tf": {
    "5m": "up",
-   "15m": "down",
+   "15m": "side",
    "1h": "down",
    "4h": "down",
    "1d": "down",
@@ -116,16 +116,6 @@
  },
  "_morning": "2026-11-21",
  "_follow": [
-  {
-   "name": "ETHEREUM",
-   "emoji": "🔷",
-   "tag": "#Ethereum",
-   "ts": 1795243560.844855,
-   "price": 1621.989990234375,
-   "kind": "move",
-   "rsi": 32.25536239358563,
-   "chg1": 4.041745920732049
-  },
   {
    "name": "BITCOIN",
    "emoji": "🟠",
