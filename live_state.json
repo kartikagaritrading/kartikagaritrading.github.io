@@ -10,14 +10,14 @@
    "move": 1795243251.3247044
   },
   "tf": {
-   "5m": "side",
-   "15m": "down",
+   "5m": "up",
+   "15m": "side",
    "1h": "down",
    "4h": "down",
    "1d": "down",
    "1w": "down"
   },
-  "rz": "os",
+  "rz": "n",
   "seen": [
    "rsi_os",
    "move"
