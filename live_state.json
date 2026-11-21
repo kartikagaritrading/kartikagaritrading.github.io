@@ -10,7 +10,7 @@
    "move": 1795187756.54651
   },
   "tf": {
-   "5m": "up",
+   "5m": "side",
    "15m": "down",
    "1h": "down",
    "4h": "down",
@@ -49,7 +49,7 @@
  "GOLD": {
   "photo": 216,
   "text": 217,
-  "dash": null,
+  "dash": 465,
   "cd": {
    "tf_1h": 1794181851.4414287,
    "move": 1795188943.529206,
@@ -71,9 +71,9 @@
   ]
  },
  "EUR/USD": {
-  "photo": null,
-  "text": null,
-  "dash": null,
+  "photo": 466,
+  "text": 467,
+  "dash": 468,
   "cd": {
    "tf_4h": 1794336353.0173295,
    "tf_1h": 1794250889.721603,
@@ -91,9 +91,9 @@
   "rz": "n"
  },
  "NASDAQ": {
-  "photo": null,
-  "text": null,
-  "dash": null,
+  "photo": 469,
+  "text": 470,
+  "dash": 471,
   "cd": {
    "rsi": 1795185077.2020533,
    "move": 1795185077.2020533,
