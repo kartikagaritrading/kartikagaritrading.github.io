@@ -2,6 +2,7 @@
 GitHub Actions har 30 minute chalta hai, agle ~50 minute ki badi khabrein dekhta hai,
 sahi samay tak ruka rehta hai aur T-10 minute par bhejta hai."""
 import os, json, time, datetime as dt
+import html
 import requests
 import alerts_v3 as A
 
@@ -75,6 +76,51 @@ NEWS = [
 DEFAULT = ("बड़ी ख़बर", "High-impact news", "यह बड़ी आर्थिक ख़बर है।", "आँकड़ा अनुमान से अलग आए तो बाज़ार में तेज़ हलचल हो सकती है।", 1)
 
 
+def esc(x):
+    return html.escape(str(x), quote=False)
+
+
+def send_html(txt):
+    r = requests.post(f"https://api.telegram.org/bot{A.TOKEN}/sendMessage",
+                      data={"chat_id": A.CHAT, "text": txt[:4090], "parse_mode": "HTML",
+                            "disable_web_page_preview": "true"}, timeout=60)
+    print("html:", r.status_code, r.text[:100])
+    if not r.ok:
+        A.send_text(html.unescape(txt.replace("<blockquote expandable>", "").replace("</blockquote>", "").replace("<b>", "").replace("</b>", ""))[:4000])
+    return r.ok
+
+
+SHORTS = {
+    "ADP Employment Change": "शुक्रवार की जॉब रिपोर्ट का पहला इशारा।",
+    "Consumer Price Index": "महँगाई नापने का पैमाना। Fed की ब्याज दर इसी पर टिकी है।",
+    "Producer Price Index": "थोक की महँगाई। आगे की CPI का इशारा।",
+    "Personal Consumption Expenditures Price Index": "Fed की पसंदीदा महँगाई।",
+    "Non-Farm Payrolls": "अमेरिका में कितनी नई नौकरियाँ बनीं।",
+    "Initial Jobless Claims": "इस हफ़्ते कितनों ने बेरोज़गारी भत्ता माँगा।",
+    "Unemployment Rate": "कितने प्रतिशत लोगों के पास काम नहीं।",
+    "Job Openings (JOLTS)": "कंपनियों में कितनी नौकरियाँ खाली हैं।",
+    "FOMC Meeting Minutes": "Fed की पिछली बैठक का लिखित ब्योरा।",
+    "Central Bank Interest Rate Decision": "ब्याज दर बढ़ी, घटी या वैसी ही रही।",
+    "FOMC Statement": "फ़ैसले के साथ आने वाला बयान।",
+    "Central Bank Speech / Press Conference": "बड़े अधिकारी का भाषण।",
+    "Gross Domestic Product": "देश की कमाई की रफ़्तार।",
+    "Retail Sales": "लोगों ने कितनी ख़रीदारी की।",
+    "Purchasing Managers' Index": "कारोबार की सेहत (50 से ऊपर = बढ़त)।",
+}
+
+
+def short_scen(cur, sg):
+    n = CURN.get(cur, cur)
+    if sg == 0:
+        return f"🗣 सख़्त लहजा: {n} ऊपर ⬆️\n🗣 नरम लहजा: {n} नीचे ⬇️"
+    up, dn = ("ज़्यादा", "कम") if sg > 0 else ("कम", "ज़्यादा")
+    if cur == "USD":
+        a, b = f"{n} ऊपर ⬆️, सोना और Crypto नीचे ⬇️", f"{n} नीचे ⬇️, सोना और Crypto ऊपर ⬆️"
+    else:
+        a, b = f"{n} ऊपर ⬆️", f"{n} नीचे ⬇️"
+    return f"📈 अनुमान से {up} आए: {a}\n📉 अनुमान से {dn} आए: {b}"
+
+
 def info(title):
     t = title.lower()
     for keys, hn, en, what, why, sg in NEWS:
@@ -102,8 +148,8 @@ def scen(cur, sg):
     n = CURN.get(cur, cur)
     if sg == 0:
         return (f"🔀 यहाँ शब्द मायने रखते हैं, आँकड़ा नहीं:\n"
-                f"• सख़्त (ब्याज दर ऊँची रखने वाला) लहजा → {n} अक्सर मज़बूत\n"
-                f"• नरम (ब्याज दर घटाने वाला) लहजा → {n} अक्सर कमज़ोर")
+                f"• सख़्त (ब्याज दर ऊँची रखने वाला) लहजा हो तो {n} अक्सर मज़बूत\n"
+                f"• नरम (ब्याज दर घटाने वाला) लहजा हो तो {n} अक्सर कमज़ोर")
     up, dn = ("ज़्यादा", "कम") if sg > 0 else ("कम", "ज़्यादा")
     if cur == "USD":
         eff_s = "सोना, Crypto, EUR/USD और Nasdaq पर अक्सर दबाव"
@@ -112,8 +158,8 @@ def scen(cur, sg):
         eff_s = f"{n} से जुड़े जोड़े (जैसे EUR/USD) अक्सर चढ़ते हैं" if cur in ("EUR", "GBP") else f"{n} से जुड़े बाज़ार अक्सर चढ़ते हैं"
         eff_w = f"{n} से जुड़े बाज़ार अक्सर गिरते हैं"
     return (f"🔀 अलग-अलग नतीजे:\n"
-            f"📈 आँकड़ा अनुमान से {up} आया → {n} मज़बूत → {eff_s}\n"
-            f"📉 आँकड़ा अनुमान से {dn} आया → {n} कमज़ोर → {eff_w}\n"
+            f"📈 आँकड़ा अनुमान से {up} आया तो {n} मज़बूत होता है, और {eff_s}\n"
+            f"📉 आँकड़ा अनुमान से {dn} आया तो {n} कमज़ोर होता है, और {eff_w}\n"
             f"⚖️ अनुमान के बराबर आया तो चाल अक्सर छोटी रहती है।")
 
 
@@ -234,24 +280,31 @@ def header(ev):
     mins = max(0, round((ev["t"] - dt.datetime.now(dt.timezone.utc)).total_seconds() / 60))
     hn, en, what, why, sg = info(ev["title"])
     pn = period_note(ev["title"])
+    tag = SHORTS.get(en, "बड़ी आर्थिक ख़बर।")
+    parts = [f"{en}" + ("" if ev["title"] == en else f" ({ev['title']})") + (f"\n{pn}" if pn else ""),
+             f"📖 यह क्या है: {what}",
+             f"🎯 क्यों ज़रूरी: {why}"]
+    if sg != 0:
+        parts.append("⚖️ अनुमान के बराबर आए तो चाल अक्सर छोटी रहती है।")
+        parts.append("💡 बाज़ार आँकड़े के अच्छे या बुरे होने पर नहीं, अनुमान से फ़र्क़ पर चलता है।")
+    parts.append("🛡 ख़बर के समय:\n"
+                 "• स्प्रेड बढ़ जाता है, भाव छलाँग मार सकता है।\n"
+                 "• स्टॉप लॉस दूर लग सकता है, स्लिपेज हो सकता है।\n"
+                 "• नया ट्रेड पहली कुछ कैंडल बंद होने के बाद ही लो।\n"
+                 "• लीवरेज कम रखो या ट्रेड से दूर रहो।")
+    parts.append(f"📚 पूरा पाठ: {SITE}/learn/news-and-calendar/")
+    detail = "\n\n".join(parts)
     return (
-        f"⚠️ {'बड़ी' if ev.get('imp', 'High') == 'High' else 'मध्यम'} ख़बर {mins} मिनट में\n\n"
-        f"📰 {hn}\n"
-        f"({en} · {ev['title']} · {ev['cur']})\n"
-        f"🕐 समय: {ist} (भारत)\n"
-        f"📊 अनुमान: {ev['fc']} | पिछला: {ev['pv']}" + (f"\n   ({pn})" if pn else "") + "\n\n"
-        f"📖 यह क्या है: {what}\n\n"
-        f"🎯 क्यों ज़रूरी: {why}\n\n"
-        f"{scen(ev['cur'], sg)}\n\n"
-        "💡 बाज़ार आँकड़े के अच्छे या बुरे होने पर नहीं, अनुमान से फ़र्क़ पर चलता है।\n\n"
-        "🛡 ख़बर के समय क्या ध्यान रखें:\n"
-        "• स्प्रेड बढ़ जाता है और भाव छलाँग मार सकता है।\n"
-        "• Stop Loss अपेक्षा से दूर लग सकता है, स्लिपेज हो सकता है।\n"
-        "• नया ट्रेड ख़बर के बाद पहली कुछ कैंडल देखकर ही लो।\n"
-        "• लीवरेज कम रखो या ट्रेड से दूर रहो।\n\n"
-        f"📚 पूरा पाठ (चार्ट के उदाहरण के साथ): {SITE}/learn/news-and-calendar/\n\n"
-        "नीचे हर मार्केट का चार्ट और सपोर्ट-रेज़िस्टेंस आ रहे हैं 👇\n"
-        "⚠️ यह सिर्फ़ पढ़ाई के लिए है, ट्रेडिंग की सलाह नहीं।\n#News #Alert"
+        f"⚠️ <b>बड़ी ख़बर {mins} मिनट में</b>\n\n"
+        f"📰 <b>{esc(hn)}</b> ({esc(ev['cur'])})\n"
+        f"🕐 {esc(ist)} (भारत)\n"
+        f"📊 अनुमान: {esc(ev['fc'])} | पिछला: {esc(ev['pv'])}\n\n"
+        f"💬 {esc(tag)}\n\n"
+        f"{esc(short_scen(ev['cur'], sg))}\n\n"
+        "🛡 कूदो मत। कैंडल बंद होने का इंतज़ार करो।\n\n"
+        "👇 पूरी समझ के लिए \"और पढ़ो\" दबाओ\n"
+        f"<blockquote expandable>{esc(detail)}</blockquote>\n"
+        "⚠️ सिर्फ़ पढ़ाई के लिए, सलाह नहीं।\n#News #Alert"
     )
 
 
@@ -276,18 +329,21 @@ def market_post(ev, name):
         tfr = tf_table(symbol, d1, d4)
         pl, risk = plan(a, d1, f)
         notes = context_notes(a)
-        txt = (f"📋 {n} — ट्रेड की तैयारी\n\n"
-               + ("🕰 हर टाइमफ़्रेम पर हाल:\n" + "\n".join(tfr) + "\n\n" if tfr else "")
-               + (("\n".join(notes) + "\n\n") if notes else "")
-               + f"🔗 ख़बर का असर: {REL.get(n, '')}\n\n"
-               + "🎯 उदाहरण योजना (सलाह नहीं):\n\n" + pl + "\n\n"
-               + f"📏 यहाँ जोखिम का आकार 1 घंटे की औसत चाल (ATR) का 1.2 गुना, यानी {f(risk)} लिया है।\n\n"
-               + "✅ याद रखो:\n"
-               + "• ख़बर आते ही कूदो मत। कैंडल बंद होने का इंतज़ार करो।\n"
-               + "• एक ट्रेड में पूँजी का 1% से ज़्यादा जोखिम मत लो।\n"
-               + "• Stop Loss ट्रेड लेने से पहले लगाओ।\n\n"
-               + f"⚠️ यह सिर्फ़ पढ़ाई के लिए एक उदाहरण है, ख़रीद-बिक्री की सलाह नहीं।\n{tag}")
-        A.send_text(txt[:4000])
+        body = (("🕰 हर टाइमफ़्रेम पर हाल:\n" + "\n".join(tfr) + "\n\n" if tfr else "")
+                + (("\n".join(notes) + "\n\n") if notes else "")
+                + f"🔗 ख़बर का असर: {REL.get(n, '')}\n\n"
+                + "🎯 उदाहरण योजना (सलाह नहीं):\n\n" + pl + "\n\n"
+                + f"📏 जोखिम का आकार: 1 घंटे की औसत चाल (ATR) का 1.2 गुना, यानी {f(risk)}।\n\n"
+                + "✅ याद रखो:\n"
+                + "• ख़बर आते ही कूदो मत, कैंडल बंद होने का इंतज़ार करो।\n"
+                + "• एक ट्रेड में पूँजी का 1% से ज़्यादा जोखिम मत लो।\n"
+                + "• Stop Loss ट्रेड लेने से पहले लगाओ।")
+        txt = (f"📋 <b>{esc(n)} — ट्रेड की तैयारी</b>\n\n"
+               f"🧭 {esc(A.BIAS[a['score']])}\n"
+               "👇 हर टाइमफ़्रेम और उदाहरण योजना देखने के लिए \"और पढ़ो\" दबाओ\n"
+               f"<blockquote expandable>{esc(body)}</blockquote>\n"
+               f"⚠️ सिर्फ़ पढ़ाई के लिए, ख़रीद-बिक्री की सलाह नहीं।\n{esc(tag)}")
+        send_html(txt)
         return
 
 
@@ -366,7 +422,7 @@ def after(ev):
 
 
 def fire(ev):
-    A.send_text(header(ev))
+    send_html(header(ev))
     for n in AFFECT[ev["cur"]]:
         try:
             market_post(ev, n)
