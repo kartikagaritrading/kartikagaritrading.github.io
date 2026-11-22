@@ -9,6 +9,7 @@ on:
       - 'hi_lessons.js'
       - 'viz*.js'
       - 'tools/gen.js'
+      - '.github/workflows/pages.yml'
 permissions:
   contents: write
 jobs:
@@ -25,5 +26,5 @@ jobs:
         run: |
           git config user.name "lesson-pages-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add learn sitemap.xml robots.txt
+          git add learn kartik-agari sitemap.xml robots.txt
           git diff --cached --quiet || (git commit -m "Update lesson pages" && git push)
