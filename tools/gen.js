@@ -64,7 +64,7 @@ const storyPg=head('Kartik Agari (कार्तिक आगरी): I lost mo
 <div style="display:flex;gap:16px;align-items:center;margin:14px 0 6px"><img src="/favicon.png" alt="Kartik Agari" width="96" height="96" style="border-radius:50%;border:2px solid var(--gold)"><div><div class="hi" style="margin:0;font-size:15px">Kartik Agari · <span lang="hi">कार्तिक आगरी</span></div><h1 style="margin:4px 0 0;font-size:clamp(26px,6.4vw,38px);line-height:1.15">I lost money first. Then I learned why.</h1></div></div>
 <article lang="en">
 <p style="font-size:18px">I'm Kartik, from Agar, a small village near Dwarahat in the hills of Almora, Uttarakhand. My childhood was not easy.</p>
-<p>I learned trading from my brother. He is the one who motivated me to move forward.</p>
+<p>I learned trading from my two brothers, Luciferthenx and Karan. Both of them are traders, and they are the ones who motivated me to move forward.</p>
 <h2>The honest part</h2>
 <p>I mostly lost money at the start. My profits were small. Those losses became my best teacher, and they gave me four lessons:</p>
 <div class="eg" style="font-size:18px;color:var(--tx)">“Trading is not gambling, and it is not a joke. Learn it seriously, and learn it with discipline.”</div>
