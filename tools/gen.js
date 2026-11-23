@@ -46,7 +46,7 @@ L.forEach(x=>{
   const pg=head(title,first,url,'<script type="application/ld+json">'+JSON.stringify(ld)+'</script>')+
   `<div class="pg"><div class="crumb"><a href="/">Home</a> › <a href="/learn/">Lessons</a> › ${esc(x.group)}</div><h1>${esc(x.title)}</h1>${h?`<div class="hi" lang="hi">${esc(h.t)}</div>`:''}
 <article>${x.body}${h?`<div class="hib" lang="hi"><h2>हिंदी में</h2>${h.b}</div>`:''}${viz}</article>
-<div class="cta"><b>Have a question about this? Ask the AI Guru. · इस पर सवाल है? गुरु से पूछो।</b><a class="btn gold" href="/#tutor">Ask the Guru</a><a class="btn" href="https://t.me/kartiktradinghindi" rel="noopener">Telegram</a></div>
+<div class="cta"><b>Have a question about this? Ask the AI Guru. · इस पर सवाल है? गुरु से पूछो।</b><a class="btn gold" href="/#tutor">Ask the Guru</a><a class="btn" href="https://t.me/kartiktradinghindi" rel="noopener">Telegram</a><a class="btn" href="https://kartiktradinghindi.blogspot.com" rel="noopener">Blogger</a></div>
 ${nx?`<h2>Next · आगे सीखो</h2><div class="nx">${nx}</div>`:''}`+foot;
   write(`learn/${x.slug}/index.html`,pg);
 });
@@ -77,7 +77,7 @@ const storyPg=head('Kartik Agari (कार्तिक आगरी): I lost mo
 <ol><li>Read <a href="/learn/risk-management/">Risk management</a>. It protects your money.</li><li>Learn the <a href="/learn/stop-loss/">Stop loss</a>. It protects you from one bad candle.</li><li>Understand <a href="/learn/overtrading/">Overtrading</a>. It protects you from yourself.</li></ol>
 <p>If you are just starting, you are in the right place. You do not need big money. You need patience, discipline and a plan. Take what helps you, and start today with one lesson.</p>
 </article>
-<div class="cta"><b>Start free. Learn one lesson today.</b><a class="btn gold" href="/learn/risk-management/">Start learning</a><a class="btn" href="https://t.me/kartiktradinghindi" rel="noopener">Join Telegram</a></div>`+foot;
+<div class="cta"><b>Start free. Learn one lesson today.</b><a class="btn gold" href="/learn/risk-management/">Start learning</a><a class="btn" href="https://t.me/kartiktradinghindi" rel="noopener">Join Telegram</a><a class="btn" href="https://kartiktradinghindi.blogspot.com" rel="noopener">Blogger</a></div>`+foot;
 write('kartik-agari/index.html',storyPg);
 
 write('sitemap.xml',`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n<url><loc>${SITE}/</loc><lastmod>${today}</lastmod></url>\n<url><loc>${SITE}/learn/</loc><lastmod>${today}</lastmod></url>\n<url><loc>${SITE}/kartik-agari/</loc><lastmod>${today}</lastmod></url>\n`+L.map(x=>`<url><loc>${SITE}/learn/${x.slug}/</loc><lastmod>${today}</lastmod></url>`).join('\n')+'\n</urlset>\n');
