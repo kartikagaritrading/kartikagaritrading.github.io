@@ -124,16 +124,6 @@
  "_morning": "2026-11-23",
  "_follow": [
   {
-   "name": "EUR/USD",
-   "emoji": "💶",
-   "tag": "#EURUSD",
-   "ts": 1795450563.2994223,
-   "price": 1.0886130332946777,
-   "kind": "rsi_os",
-   "rsi": 28.642654824838985,
-   "chg1": -0.10887232316342084
-  },
-  {
    "name": "ETHEREUM",
    "emoji": "🔷",
    "tag": "#Ethereum",
