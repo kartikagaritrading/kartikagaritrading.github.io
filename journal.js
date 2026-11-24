@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 var KEY='kjournal',mem=[];
-var MK=[["BTC","Bitcoin","बिटकॉइन"],["ETH","Ethereum","एथेरियम"],["GOLD","Gold","सोना"],["EURUSD","EUR/USD","EUR/USD"],["NASDAQ","Nasdaq","Nasdaq"],["OTHER","Other","कोई और"]];
+var MK=[["BTC","Bitcoin","बिटकॉइन"],["ETH","Ethereum","एथेरियम"],["GOLD","Gold","सोना"],["EURUSD","EUR/USD","EUR/USD"],["GBPUSD","GBP/USD","GBP/USD"],["USDJPY","USD/JPY","USD/JPY"],["SOL","Solana","सोलाना"],["NASDAQ","Nasdaq","Nasdaq"],["OTHER","Other","कोई और"]];
 var RS=[["trend","With the trend","ट्रेंड के साथ"],["break","Breakout","ब्रेकआउट"],["sr","Support / resistance","सपोर्ट / रेज़िस्टेंस"],["news","News","खबर"],["fomo","Fear of missing out","छूट जाने का डर"],["other","Other","कुछ और"]];
 var MS=[["none","No mistake","कोई गलती नहीं"],["nostop","No stop-loss","स्टॉप-लॉस नहीं लगाया"],["moved","Moved the stop","स्टॉप खिसका दिया"],["revenge","Revenge trade","बदले का ट्रेड"],["chase","Chased the price","भाव के पीछे भागा"],["big","Position too big","पोज़ीशन बहुत बड़ी"],["early","Exited too early","जल्दी निकल गया"]];
 var T={
