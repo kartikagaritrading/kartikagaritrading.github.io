@@ -15,7 +15,7 @@ function tv(id,name,cfg){
   s.text=JSON.stringify(cfg);
   box.appendChild(w); box.appendChild(s); el.appendChild(box);
 }
-var SYMS=[['Bitcoin','BINANCE:BTCUSDT'],['Ethereum','BINANCE:ETHUSDT'],['Gold','OANDA:XAUUSD'],['EUR/USD','FX:EURUSD'],['Nasdaq','FOREXCOM:NSXUSD']];
+var SYMS=[['Bitcoin','BINANCE:BTCUSDT'],['Ethereum','BINANCE:ETHUSDT'],['Gold','OANDA:XAUUSD'],['EUR/USD','FX:EURUSD'],['GBP/USD','FX:GBPUSD'],['USD/JPY','FX:USDJPY'],['Solana','BINANCE:SOLUSDT'],['Nasdaq','FOREXCOM:NSXUSD']];
 function lazy(id,fn){
   var el=document.getElementById(id); if(!el) return;
   if(!('IntersectionObserver' in window)){fn();return}
