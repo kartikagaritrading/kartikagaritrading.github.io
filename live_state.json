@@ -12,7 +12,7 @@
   },
   "tf": {
    "5m": "side",
-   "15m": "side",
+   "15m": "down",
    "1h": "up",
    "4h": "down",
    "1d": "down",
@@ -36,9 +36,9 @@
    "tf_4h": 1795442484.09349
   },
   "tf": {
-   "5m": "side",
+   "5m": "down",
    "15m": "down",
-   "1h": "up",
+   "1h": "side",
    "4h": "down",
    "1d": "down",
    "1w": "down"
