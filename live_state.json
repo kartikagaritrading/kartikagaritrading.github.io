@@ -63,8 +63,8 @@
   },
   "tf": {
    "5m": "up",
-   "15m": "side",
-   "1h": "side",
+   "15m": "up",
+   "1h": "down",
    "4h": "down",
    "1d": "down",
    "1w": "down"
