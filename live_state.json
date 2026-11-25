@@ -69,7 +69,7 @@
    "1d": "down",
    "1w": "down"
   },
-  "rz": "os",
+  "rz": "n",
   "seen": [
    "move",
    "rsi_os"
@@ -109,7 +109,7 @@
    "tf_1h": 1794258084.949424
   },
   "tf": {
-   "5m": "down",
+   "5m": "side",
    "15m": "down",
    "1h": "down",
    "4h": "down",
