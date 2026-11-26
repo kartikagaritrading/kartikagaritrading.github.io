@@ -38,7 +38,7 @@
   "tf": {
    "5m": "down",
    "15m": "side",
-   "1h": "up",
+   "1h": "side",
    "4h": "down",
    "1d": "down",
    "1w": "down"
@@ -86,8 +86,8 @@
    "rsi": 1795450563.2994223
   },
   "tf": {
-   "5m": "side",
-   "15m": "side",
+   "5m": "down",
+   "15m": "down",
    "1h": "up",
    "4h": "down",
    "1d": "down",
