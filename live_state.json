@@ -129,16 +129,6 @@
    "name": "BITCOIN",
    "emoji": "🟠",
    "tag": "#Bitcoin",
-   "ts": 1795746357.1555095,
-   "price": 61447.5,
-   "kind": "tf",
-   "rsi": 58.64573456270366,
-   "chg1": 1.323809964265466
-  },
-  {
-   "name": "BITCOIN",
-   "emoji": "🟠",
-   "tag": "#Bitcoin",
    "ts": 1795746676.4741902,
    "price": 61578.4609375,
    "kind": "move",
