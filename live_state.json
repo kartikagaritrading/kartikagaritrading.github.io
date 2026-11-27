@@ -127,16 +127,6 @@
  "_morning": "2026-11-27",
  "_follow": [
   {
-   "name": "NASDAQ",
-   "emoji": "📈",
-   "tag": "#Nasdaq",
-   "ts": 1795789877.6156747,
-   "price": 23928.287109375,
-   "kind": "move",
-   "rsi": 49.18464017687956,
-   "chg1": 1.4743549391714597
-  },
-  {
    "name": "BITCOIN",
    "emoji": "🟠",
    "tag": "#Bitcoin",
