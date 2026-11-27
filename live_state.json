@@ -127,26 +127,6 @@
  "_morning": "2026-11-27",
  "_follow": [
   {
-   "name": "BITCOIN",
-   "emoji": "🟠",
-   "tag": "#Bitcoin",
-   "ts": 1795790454.7458534,
-   "price": 60201.5703125,
-   "kind": "move",
-   "rsi": 47.15614841554637,
-   "chg1": -1.9573475456864033
-  },
-  {
-   "name": "GOLD",
-   "emoji": "🟡",
-   "tag": "#Gold",
-   "ts": 1795790454.7458534,
-   "price": 3662.0,
-   "kind": "move",
-   "rsi": 57.43138910183951,
-   "chg1": 1.1490470328794122
-  },
-  {
    "name": "ETHEREUM",
    "emoji": "🔷",
    "tag": "#Ethereum",
