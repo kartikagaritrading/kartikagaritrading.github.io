@@ -1,8 +1,8 @@
 {
  "BITCOIN": {
-  "photo": 123,
-  "text": 124,
-  "dash": 125,
+  "photo": null,
+  "text": null,
+  "dash": null,
   "cd": {
    "macd": 1794266151.6794894,
    "tf_1h": 1794273050.831651,
@@ -11,7 +11,7 @@
    "tf_4h": 1795442484.09349
   },
   "tf": {
-   "5m": "side",
+   "5m": "up",
    "15m": "up",
    "1h": "up",
    "4h": "down",
@@ -26,7 +26,7 @@
   ]
  },
  "ETHEREUM": {
-  "photo": 126,
+  "photo": 588,
   "text": 335,
   "dash": 336,
   "cd": {
@@ -88,7 +88,7 @@
   "tf": {
    "5m": "down",
    "15m": "down",
-   "1h": "side",
+   "1h": "up",
    "4h": "down",
    "1d": "down",
    "1w": "down"
